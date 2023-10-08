@@ -130,7 +130,7 @@ import {
 
 
 import slideCreateComponent from '../slide/slideCreateComponent';
-import slideUpdateComponent from '../slide/slideUpdateComponent';
+import slideUpdateComponent from '../slide/slideupdatecomponent';
 
 
 const displayedSlides = computed(() => {
