@@ -98,8 +98,8 @@ import { ref, onMounted, defineProps, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import api from '../../api/courseApi';
 
-import slideCreateComponent from '../slide/slideCreateComponent';
-import slideUpdateComponent from '../slide/slideUpdateComponent';
+import slideCreateComponent from '../slide/slideCreateComponent.vue';
+import slideUpdateComponent from '../slide/slideUpdateComponent.vue';
 
 import {
   fetchSlides,
