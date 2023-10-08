@@ -98,6 +98,9 @@ import { ref, onMounted, defineProps, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import api from '../../api/courseApi';
 
+import slideCreateComponent from '../slide/slideCreateComponent';
+import slideUpdateComponent from '../slide/slideUpdateComponent';
+
 import {
   fetchSlides,
 } from '../../modules/Crud_operator/slide/slideGetCrud';
@@ -129,8 +132,7 @@ import {
 } from '../../modules/Main_logic/courseBoard';
 
 
-import slideCreateComponent from '../slide/slideCreateComponent';
-import slideUpdateComponent from '../slide/slideUpdateComponent';
+
 
 
 const displayedSlides = computed(() => {
