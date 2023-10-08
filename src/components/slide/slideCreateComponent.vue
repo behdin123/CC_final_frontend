@@ -25,7 +25,7 @@ import {
     createSlide,
     newSlide,
     onFileChange,
-} from '../../modules/Crud_operator/Slide/slideCreateCrud';
+} from '../../modules/Crud_operator/slide/slideCreateCrud';
 
 
 

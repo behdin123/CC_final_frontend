@@ -129,8 +129,8 @@ import {
 } from '../../modules/Main_logic/courseBoard';
 
 
-import slideCreateComponent from '../slide/slideCreateComponent.vue';
-import slideUpdateComponent from '../slide/slideUpdateComponent.vue';
+import slideCreateComponent from '../slide/slideCreateComponent';
+import slideUpdateComponent from '../slide/slideUpdateComponent';
 
 
 const displayedSlides = computed(() => {
