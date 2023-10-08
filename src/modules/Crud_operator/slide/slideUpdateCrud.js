@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import api from '../../../api/SlideApi.js'; 
+import api from '../../../api/slideApi.js'; 
 
 const { updateSlide } = api; 
 
