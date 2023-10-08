@@ -1,0 +1,184 @@
+:root{
+--primary-color: #ffffff;
+--secondary-color: #F3F6FF;
+--tertiary-color: #314E59;
+--quaternary-color: #3563FF;
+--quaternary-hover-color: #2649ba;
+--primary-hover-color: #97CBD0;
+--background-color: #f1f1f1;
+--white-black-color: #000000;
+
+--error: #CD1619;
+--succes: #2B8852;
+--main-button: #005968;
+--main-background: #EFEFEF;
+--second-background: #ffffff; 
+--container-background: #DDDDDD;
+
+}
+
+.Update-button{
+    background-color: #8BC34A !important;
+}
+
+
+.close{
+  background-color: transparent;
+  border: none;
+  color: var(--white-black-color);
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+
+.close:hover {
+  color: var(--primary-hover-color);
+}
+
+
+.column {
+    transition: background-color 0.2s ease;
+}
+
+.column.dragover {
+    background-color: #d1d1d1; 
+    border: 2px #333 !important;
+}
+
+.card {
+    transition: transform 0.2s ease, opacity 0.2s ease; 
+}
+
+.card.dragging {
+    transform: scale(1.05) !important; 
+    opacity: 0.2 !important; 
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important; 
+}
+
+
+.cropper-bg {
+    background-image: none !important;
+}
+
+.cropper-container {
+    position: absolute;
+}
+
+
+.line {
+    position: relative;
+    margin-top: 0 !important;
+    margin-left: 35px;
+    height: 0.5px;
+    width: 87%;
+    background: var(--white-black-color);
+    transform: scaleX(0);
+    transform-origin: center;
+    opacity: 0.1 !important;
+    animation: line-animation 2s forwards;
+}
+  
+@keyframes line-animation {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.card h2 {
+  font-size: 20px;
+  margin: 10px 0;
+}
+
+.card p {
+  color: #718096;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.card button {
+  background-color: var(--main-button);
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 12px 30px;
+  transition: background-color 0.1s ease-in-out;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.568);
+}
+
+.card button:hover {
+  background-color: var(--primary-hover-color);
+}
+
+.plus-icon {
+  display: inline-block;
+  width: 20px; 
+  height: 20px; 
+  background-image: url('@/assets/plus.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-left: 20px;
+}
+
+.project-btn-div{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out; 
+  position: absolute;
+  right: 0;
+}
+
+.project:hover .project-btn-div {
+  opacity: 1; 
+}
+
+.team-content:hover .project-btn-div {
+  opacity: 1; 
+}
+
+.edit-button{
+  margin-top: 20px;
+  height: 41px;
+  width: 90px;
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-icon{
+  display: inline-block;
+  width: 15px; 
+  height: 15px; 
+  background-image: url('@/assets/pencil.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-left: 20px;
+}
+
+.project-btn-margin{
+  margin: 0 10px 10px 0;
+}
+  
+
+
+
+
