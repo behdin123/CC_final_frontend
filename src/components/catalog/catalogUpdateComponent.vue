@@ -61,7 +61,7 @@
     onUpdateFinished,
   } from '../../modules/Main_logic/Home';
   
-  import { removeCatalog } from '../../modules/Crud_operator/Catalog/catalogRemoveCrud';
+  import { removeCatalog } from '../../modules/Crud_operator/catalog/catalogRemoveCrud';
   
   const props = defineProps({
     catalog: Object,
