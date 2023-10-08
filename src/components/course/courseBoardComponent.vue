@@ -128,6 +128,7 @@ import {
     showSlideUpdate,
     openSlideUpdate,
     closeSlideUpdate,
+    slideRemoved,
     removeSlideAndClose,
 } from '../../modules/Main_logic/courseBoard';
 

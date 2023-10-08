@@ -62,5 +62,6 @@ export{
     showSlideUpdate,
     openSlideUpdate,
     closeSlideUpdate,
+    slideRemoved,
     removeSlideAndClose,
 };
