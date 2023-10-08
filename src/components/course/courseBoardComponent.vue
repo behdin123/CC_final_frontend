@@ -218,7 +218,7 @@ main {
   background-color: var(--second-background);
   color: var(--white-black-color);
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-  min-height: 500px;
+  min-height: 70vh;
   margin-bottom: 60px;
   padding: 10px 30px 60px 30px;
   
