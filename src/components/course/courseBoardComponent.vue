@@ -157,6 +157,8 @@ async function fetchCourse(courseId) {
 
 const { id: courseId } = useRoute().params;
 
+
+
 onMounted(async () => {
   await fetchCourse(courseId);
   await fetchLessons(courseId); 
@@ -175,6 +177,12 @@ watch([showSlideCreation, showSlideUpdate], async (newValue, oldValue) => {
     for (const lesson of lessons.value) {
       await fetchSlides(lesson._id); 
     }  
+  }
+});
+
+watch(slideRemoved, async () => {
+  for (const lesson of lessons.value) {
+    await fetchSlides(lesson._id); 
   }
 });
 
