@@ -39,7 +39,6 @@ const closeSlideUpdate = () => {
 
 const removeSlideAndClose = async (slideId) => {
     await removeSlide(slideId);
-    onUpdateFinishedSlide(); 
 };
 
   

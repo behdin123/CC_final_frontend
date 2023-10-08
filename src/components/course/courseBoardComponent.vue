@@ -221,7 +221,6 @@ main {
   min-height: 70vh;
   margin-bottom: 60px;
   padding: 10px 30px 60px 30px;
-  
 }
 
 .main-div .line {
