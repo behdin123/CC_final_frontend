@@ -18,7 +18,8 @@
         </div>
 
         <div class="user-short" v-if="isLoggedIn" @click="showPopup = !showPopup">
-          <img :src="profile_image" alt="Profile Picture" class="user-short__img">
+          <img v-if="!profile_image" src="@/assets/profile-placeholder.png" alt="Profile Picture" class="user-short__img">
+          <img v-else :src="profile_image" alt="Profile Picture" class="user-short__img"  @error="imageError">
           <p class="user-short-name">{{ capitalizedUsername() }}</p>
         </div>
 
@@ -45,7 +46,7 @@ import { useRouter } from 'vue-router';
 
 import { isLoggedIn } from '../../modules/Crud_operator/User/login.js';
 
-import { capitalizedUsername, showPopup } from '../../modules/Main_logic/UserProfile';
+import { capitalizedUsername, showPopup, imageError } from '../../modules/Main_logic/UserProfile';
 
 import { profile_image } from '../../modules/Crud_operator/User/userGetCrud'
 
@@ -71,7 +72,6 @@ watch(isLoggedIn, (newIsLoggedIn) => {
     router.push('/');
   }
 });
-
 
 </script>
 

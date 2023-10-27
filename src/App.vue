@@ -21,13 +21,20 @@ import { isLoggedIn } from './modules/Crud_operator/User/login.js';
 import footerComponent from './components/partials/footerComponent.vue';
 import navigationComponent from './components/partials/navigationComponent.vue';
 
-import { ref, watchEffect, onMounted } from 'vue';
+import { ref, watchEffect, onMounted, watch } from 'vue';
 
 // chekcing if their is a token saved as a coockie, and if so it means that the user is logged in and theirfor the isLoggedIn value will be sat to true
 onMounted(() => {
   const token = Cookies.get('jwt');
   if (token) {
     isLoggedIn.value = true;
+  }
+});
+
+watch(isLoggedIn, (newValue) => {
+  if (!newValue) {
+    // Hvis isLoggedIn er false, fjern token fra cookies
+    Cookies.remove('jwt');
   }
 });
 

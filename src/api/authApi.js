@@ -8,7 +8,7 @@ register: async (data) => {
     try {
         
       console.log("Request body:", data);
-      const response = await axios.post(`https://cc-internship-backend.onrender.com/auth/register`, data);  
+      const response = await axios.post(`https://cc-internship-frontend.onrender.com/auth/register`, data);  
      
       return response;
 
@@ -22,7 +22,7 @@ register: async (data) => {
     try {
         
       console.log("Request body:", data);
-      const response = await axios.post(`https://cc-internship-backend.onrender.com/auth/login`, data, { withCredentials: true });
+      const response = await axios.post(`https://cc-internship-frontend.onrender.com/auth/login`, data, { withCredentials: true });
      
       return response;
     } catch (error) {

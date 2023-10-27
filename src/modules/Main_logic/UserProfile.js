@@ -9,7 +9,12 @@ const capitalizedUsername = () => {
   return first_name.value.charAt(0).toUpperCase() + first_name.value.slice(1);
 };
 
+const imageError = (event) => {
+  event.target.src = "@/assets/profile-placeholder.png";
+};
+
 export {
     showPopup,
     capitalizedUsername,
+    imageError,
   };

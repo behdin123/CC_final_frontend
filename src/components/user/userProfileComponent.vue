@@ -16,7 +16,8 @@
 
                 <div class="image-container">
                     <!-- The profile picture -->
-                    <img :src="profile_image" alt="Profile Picture">
+                    <img v-if="!profile_image" src="@/assets/profile-placeholder.png" alt="Profile Picture" class="user-short__img">
+                    <img v-else :src="profile_image" alt="Profile Picture"  @error="imageError">
                     <div class="overlay">
                       <input class="input uploadBtn" type="file" @change="onImageChange" accept="image/*" ref="fileInput">
                       <div class="text newImage" @click="promptFileUpload">Upload new Image</div>
@@ -82,7 +83,8 @@ import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
 
 import {
-    showPopup
+    showPopup,
+    imageError
 } from '../../modules/Main_logic/UserProfile';
 
 import {

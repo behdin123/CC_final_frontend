@@ -44,6 +44,7 @@
                         <div class="cta-buttons">
                             <button class="cta-button register-button" @click="openPopup(2)">Sign up</button>
                         </div>
+                        
                 </div>
             </div>
         </div>
