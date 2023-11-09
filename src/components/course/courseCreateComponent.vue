@@ -33,7 +33,7 @@
             <label class="input-label image-label"> Image:
                 <div class="image-container">
                     <!-- The profile picture -->
-                    <img v-if="!croppedImageUrl" src="@/assets/image_placeholder.jpg" alt="Profile Picture">
+                    <img v-if="!croppedImageUrl" src="@/assets/Image_placeholder.jpg" alt="Profile Picture">
                     <img v-else :src="croppedImageUrl" alt="Profile Picture"  @error="imageError">
                     <div class="overlay">
                       <input class="input uploadBtn" type="file" @change="onFileChange" accept="image/*" ref="fileInput">
