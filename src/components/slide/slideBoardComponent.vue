@@ -103,7 +103,7 @@
                                 </div>
                             </div>
                             <div class="slide-image editable-field" ref="slideImageRef">
-                                <img v-if="!slide.image" src="@/assets/image_placeholder.jpg">
+                                <img v-if="!slide.image" src="@/assets/Image_placeholder.jpg">
                                 <img v-if="slide.image && !selectedImageUrl" :src="slide.image">
                                 <img v-if="selectedImageUrl" :src="selectedImageUrl" alt="Slide Image"/>
 
