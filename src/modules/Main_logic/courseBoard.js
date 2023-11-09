@@ -2,7 +2,6 @@
 import { removeSlide } from '../../modules/Crud_operator/slide/slideRemoveCrud.js';
 import { ref } from 'vue';
 import { 
-    lessons,
     selectedLesson,
 } from '../../modules/columns';
 
@@ -38,6 +37,8 @@ const closeSlideUpdate = () => {
   showSlideUpdate.value = false;
 };
 
+
+//slide remove logic
 const slideRemoved = ref(false);
 
 
@@ -45,6 +46,7 @@ const removeSlideAndClose = async (slideId) => {
     await removeSlide(slideId);
     slideRemoved.value = !slideRemoved.value;
 };
+
 
   
 

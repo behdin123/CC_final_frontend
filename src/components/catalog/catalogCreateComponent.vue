@@ -16,7 +16,7 @@
           <input type="text" v-model="categoriesInput" placeholder="Enter categories separated by commas" />
         </label>
         <label class="input-label"> Status:
-          <input type="checkbox" v-model="statusInput" />
+          <input class="checkbox" type="checkbox" v-model="statusInput" />
         </label>
         <button class="button Update-button" @click="handleCreateCatalog">Create Catalog</button>
 

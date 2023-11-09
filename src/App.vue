@@ -1,21 +1,22 @@
 <template >
   <div id="app" :class="{ 'dark-theme': darkMode }">
     <!-- Header section -->
-    <navigation-component :toggle-dark-mode="toggleDarkMode" :darkMode="darkMode"/>
+    <navigation-component :toggle-dark-mode="toggleDarkMode" :darkMode="darkMode" v-if="!$route.meta.hideComponent"/>
 
     <!-- page view -->
     <RouterView :toggle-dark-mode="toggleDarkMode" :darkMode="darkMode"/>
 
-    <footer-component :toggle-dark-mode="toggleDarkMode" :darkMode="darkMode"/>
+    <footer-component :toggle-dark-mode="toggleDarkMode" :darkMode="darkMode" v-if="!$route.meta.hideComponent"/>
   </div>
 </template>
 
 
 <script setup>
+import Cookies from 'js-cookie';
 
 import { RouterView } from 'vue-router'
-import Cookies from 'js-cookie';
 import { isLoggedIn } from './modules/Crud_operator/User/login.js';
+
 
 // Importing navigation & footer from components
 import footerComponent from './components/partials/footerComponent.vue';

@@ -1,9 +1,17 @@
 <template>
     <div class="update-course-container">
 
+      <div v-show="showCropper" class="cropper-popup">
+            <img :src="selectedImageUrl" ref="imageSource" />
+            <div class="crop-btn-div">
+                <button class="button Update-button" @click="cropImage">Crop</button>
+                <button class="button" @click="cancelCrop">Cancel</button>
+            </div> 
+      </div>
+
       <div class="update-course-popup">
 
-        <h2>Update Course</h2>
+        <h2>Update Course: {{ course.title }}</h2>
 
         <div class="buttons-container">
             <button class="button" @click="toggleEditMode">{{ buttonText }}</button>
@@ -29,6 +37,7 @@
           <label class="input-label"> Private:
             <input 
                 v-if="editMode" 
+                class="checkbox"
                 type="checkbox" 
                 :checked="course.private"
                 @change="updatedCourse.private = $event.target.checked"
@@ -38,15 +47,31 @@
           </label>
 
           <label class="input-label"> Course Background Image:
-            <input v-if="editMode" class="extra-margin" type="file" @change="onFileChange" accept="image/*" />
-            <span  v-else class="course-image"></span>
+
+            <div v-if="editMode" class="image-container">
+                    <!-- The profile picture -->
+                    <img v-if="!course.image" src="@/assets/image_placeholder.jpg" alt="Profile Picture">
+
+                    <img v-if="course.image && !croppedImageUrl" :src="course.image" alt="Profile Picture">
+                    <img v-if="croppedImageUrl" :src="croppedImageUrl" alt="Profile Picture"  @error="imageError">
+
+                    <div class="overlay">
+                      <input class="input uploadBtn" type="file" @change="onFileChange" accept="image/*" ref="fileInput">
+                      <div class="text newImage">Upload new Image</div>
+                    </div>
+            </div>
+      
+            <span  v-else class="course-image">
+              <img :src="course.image" alt="Profile Picture"  @error="imageError">
+            </span>
+
           </label>
           
           <button v-if="editMode" class="button Update-button" @click="updateAndClose">Update Course</button>
           <button v-else class="button button-color" @click="removeCourseAndClose">Remove</button>
   
         <!-- Close button -->
-        <button class="close" @click="$emit('update-finished')">x</button>
+        <button class="close" @click="$emit('close')">x</button>
 
       </div>
 
@@ -63,10 +88,19 @@ import {
   handleUpdateCourse,
   updatedCourse,
   tagsInput,
+  showCropper,
+  imageSource,
+  selectedImageUrl,
+  croppedImageUrl,
+  cropImage,
+  cancelCrop
 } from '../../modules/Crud_operator/Course/courseUpdateCrud';
 
 import {
   onUpdateFinishedCourse,  
+
+  // Image placeholder for error in showing a image
+  imageError, 
 } from '../../modules/Main_logic/Home';
 
 import { removeCourse } from '../../modules/Crud_operator/Course/courseRemoveCrud';
@@ -99,6 +133,7 @@ watchEffect(() => {
     }
 });
 
+// removeCourseAndClose and update the course lists
 const removeCourseAndClose = async () => {
   await removeCourse(props.course._id);
   onUpdateFinishedCourse();
@@ -147,7 +182,7 @@ const toggleEditMode = () => {
 }
 
 .course-description{
-    width: 300px;
+    width: 350px;
     text-align: right;
 }
 
@@ -156,11 +191,15 @@ const toggleEditMode = () => {
 }
 
 .course-image{
-    width: 200px;
-    height: 100px;
+    width: 150px;
     background-position: center; /* Center the image */
     background-repeat: no-repeat; /* Do not repeat the image */
     background-size: cover;
+}
+
+.course-image img{
+  width: 100%;
+  height: auto;
 }
 
 .buttons-container {

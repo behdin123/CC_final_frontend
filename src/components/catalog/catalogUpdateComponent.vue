@@ -28,7 +28,8 @@
   
         <label class="input-label"> Private:
           <input 
-            v-if="editMode" 
+            v-if="editMode"
+            class="checkbox"
             type="checkbox" 
             :checked="catalog.status"
             @change="updatedCatalog.status = $event.target.checked"

@@ -6,11 +6,13 @@
       <a class="open-popup" @click="openPopup(2)"><b>Sign up</b></a>
     </div>
 
-    <div class="separator"></div>
+    <div v-if="!isLoggedIn" class="separator"></div>
 
     <div v-if="isLoggedIn" class="entry">
       <a @click="submitLogout">Logout</a>
     </div>
+
+    <div v-if="isLoggedIn" class="separator"></div>
   </div>
 
   

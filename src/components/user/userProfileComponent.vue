@@ -16,7 +16,7 @@
 
                 <div class="image-container">
                     <!-- The profile picture -->
-                    <img v-if="!profile_image" src="@/assets/profile-placeholder.png" alt="Profile Picture" class="user-short__img">
+                    <img v-if="!profile_image" src="@/assets/profile-placeholder.png" alt="Profile Picture">
                     <img v-else :src="profile_image" alt="Profile Picture"  @error="imageError">
                     <div class="overlay">
                       <input class="input uploadBtn" type="file" @change="onImageChange" accept="image/*" ref="fileInput">
@@ -77,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, nextTick, onUnmounted, computed } from 'vue';
+import { ref, onUnmounted, computed } from 'vue';
 import api from '../../api/userApi.js';
 import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
@@ -271,39 +271,6 @@ const updateAndClose = async () => {
   border-radius: 8px;
 }
 
-.cropper-popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-}
-
-.cropper-popup img {
-  max-width: 60%;
-  max-height: 60%;
-  margin-bottom: 0 !important;
-  width: auto;
-  height: 50%;
-}
-
-
-
-
-.crop-btn-div{
-  z-index: 100;
-  margin-top: 30%;
-  width: 30%;
-  display: flex;
-  justify-content: space-between;
-}
-
 
 .input-contain{
   margin-bottom: 10px;
@@ -328,6 +295,7 @@ img {
   max-width: 100%;
   max-height: 10rem;
   margin-bottom: 1rem;
+  border-radius: 50%;
 }
 
 .image-container {
@@ -335,6 +303,11 @@ img {
   max-height: 10rem;
   cursor: pointer;
   margin-bottom: 40px;
+}
+
+.user-short__img{
+  width: 100%;
+  height: auto;
 }
 
 .profile-image {
@@ -354,6 +327,7 @@ img {
   opacity: 0;
   transition: .5s ease;
   background-color: rgba(0,0,0,0.6);
+  border-radius: 50%;
 }
 
 .image-container:hover .overlay {

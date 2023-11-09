@@ -34,7 +34,6 @@
   
 <script setup>
 import { columns, addCard, dragStart, dragEnd, drop } from '../modules/columns';
-/* import tasksComponent from '../components/tasksComponent.vue' */
 </script>
 
 

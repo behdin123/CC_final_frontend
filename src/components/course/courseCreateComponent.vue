@@ -2,6 +2,14 @@
 
     <div class="create-course-container" v-if="showCourseCreation">
 
+        <div v-show="showCropper" class="cropper-popup">
+            <img :src="selectedImageUrl" ref="imageSource" />
+            <div class="crop-btn-div">
+                <button class="button Update-button" @click="cropImage">Crop</button>
+                <button class="button" @click="cancelCrop">Cancel</button>
+            </div> 
+        </div>
+
         <div class="create-course-popup">
 
             <h2>Create New Course</h2>
@@ -14,16 +22,24 @@
                 <input type="text" v-model="newCourse.description" />
             </label>
 
-            <label class="input-label"> Image:
-                <input class="extra-margin" type="file" @change="onFileChange" accept="image/*"/>
-            </label>
-
             <label class="input-label"> Tags:
                 <input type="text" v-model="tagsInput" placeholder="Enter tags separated by commas" />
             </label>
 
             <label class="input-label"> Private:
-                <input type="checkbox" v-model="newCourse.private" />
+                <input class="checkbox" type="checkbox" v-model="newCourse.private" />
+            </label>
+
+            <label class="input-label image-label"> Image:
+                <div class="image-container">
+                    <!-- The profile picture -->
+                    <img v-if="!croppedImageUrl" src="@/assets/image_placeholder.jpg" alt="Profile Picture">
+                    <img v-else :src="croppedImageUrl" alt="Profile Picture"  @error="imageError">
+                    <div class="overlay">
+                      <input class="input uploadBtn" type="file" @change="onFileChange" accept="image/*" ref="fileInput">
+                      <div class="text newImage" @click="promptFileUpload">Upload new Image</div>
+                    </div>
+                </div>
             </label>
 
             <button class="button Update-button" @click="handleCreateCourse">Create Course</button>
@@ -44,12 +60,25 @@ import {
     tagsInput,
     newCourse,
     onFileChange,
+    showCropper,
+    imageSource,
+    croppedImageUrl,
+    selectedImageUrl,
+    cropImage, 
+    cancelCrop, 
 } from '../../modules/Crud_operator/Course/courseCreateCrud';
 
-import { selectedCatalogID } from '../../modules/Main_logic/Home';
+import { 
+  selectedCatalogID, 
+  
+  // Image placeholder for error in showing a image
+  imageError, 
+
+} from '../../modules/Main_logic/Home';
 
 // Tilføj 'defineProps' import
-import { defineProps, defineEmits } from 'vue';
+import { ref, defineProps, defineEmits } from 'vue';
+
 
 // Definer 'showCourseCreation' prop
 const props = defineProps({
@@ -59,7 +88,6 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 
 const handleCreateCourse = async () => {
-  console.log("Selected Catalog ID:", selectedCatalogID.value);
   const isSuccess = await createCourse(selectedCatalogID.value);
   if (isSuccess) {
     emit('close');  
@@ -92,7 +120,7 @@ const handleCreateCourse = async () => {
     flex-direction: column;
     align-items: center;
     position: relative;
-    width: 30%;
+    width: 37%;
     box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
 }
 
@@ -128,5 +156,27 @@ const handleCreateCourse = async () => {
 .button:hover {
     background-color: var(--primary-hover-color);
     color: #000;
+}
+
+.image-container {
+  position: relative;
+  max-height: 10rem;
+  cursor: pointer;
+}
+
+/* Styling for the course picture */
+.image-container img {
+  max-width: 100%;
+  max-height: 10rem;
+  margin-bottom: 1rem;
+}
+
+.image-container:hover .overlay {
+  opacity: 1;
+}
+
+.image-label{
+  display: flex;
+  align-items: center;
 }
 </style>

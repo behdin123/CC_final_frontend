@@ -45,7 +45,9 @@
                 </div>
             </div>
 
-            <div class="line"></div>
+
+        <div class="line"></div>
+
 
           <!-- Catalog creation popup -->
             <div v-for="catalog in catalogs" :key="catalog._id" >
@@ -55,7 +57,7 @@
                       <div class="edit" @click="openCatalogUpdatePopup(catalog)">
                         <img src="@/assets/pencil.png" alt="">
                       </div>
-                      <p>{{ catalog.name }}</p>
+                      <p>{{ capitalizedCatalogName(catalog) }}</p>
                   </div>
                   <div class="catalog-title">
                     <p>{{ catalog.categories.join(', ') }}</p>
@@ -81,11 +83,11 @@
                     <div class="course-div" v-for="course in catalog.courses" :key="course._id">
                       <div class="dark-overlay"></div>
                       <div class="course-image-div">
-                        <img :src="course.image" />
+                        <img :src="course.image" @error="imageError"/>
                       </div>
 
                       <div class="course-title">
-                        <p>{{ course.title }}</p>
+                        <p>{{ capitalizedCourseTitle(course) }}</p>
                       </div>
 
                       <div @click=" openCourse(course);" class="open-course-btn">
@@ -142,7 +144,8 @@
     <course-update-component 
       v-if="showCourseUpdate" 
       :course="selectedCourse"
-      @update-finished="onUpdateFinishedCourse">
+      @update-finished="onUpdateFinishedCourse"
+      @close="closeUpdateCourse">
     </course-update-component>
 
 
@@ -187,12 +190,24 @@ import {
     openCourseCreation,
     openCourseUpdatePopup,
     onUpdateFinishedCourse,
+    closeUpdateCourse,
 
     showCatalogUpdate,
     selectedCatalog,
     openCatalogUpdatePopup,
     onUpdateFinished,
+    
+    // Image placeholder for error in showing a image
+    imageError,
+
+    // capitalize the first letter for name and titles
+    capitalizedCatalogName,
+    capitalizedCourseTitle,
+
 } from '../modules/Main_logic/Home';
+
+
+
 
 
 /*
@@ -204,7 +219,7 @@ const useRouterCustom = () => {
   
   const router = useRouter();
 
-  // To open a course interface and edit the tasks inside the course overview
+  // To open a course interface and edit the slide inside the course overview
   const openCourse = (course) => {
     router.push({ name: 'CourseBoard', params: { id: course._id } });
   };
@@ -214,6 +229,7 @@ const useRouterCustom = () => {
 }
 
 const { openCourse } = useRouterCustom();
+
 
 const openCatalogs = ref([]);
 
@@ -288,7 +304,7 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 65px;
+  padding-top: 40px;
 }
 
 .Catalog-Container{

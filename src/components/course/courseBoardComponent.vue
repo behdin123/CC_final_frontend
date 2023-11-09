@@ -38,6 +38,7 @@
                 <div class="slide-title-div">
                   <div class="edit icon" @click="openSlideUpdate(slide)">
                     <img src="@/assets/pencil.png" alt="">
+                    
                   </div>
 
                   <div class="slide-title"> {{ index + 1 }}.{{ slide.title }}</div>
@@ -50,8 +51,8 @@
                   </div>
 
                   <div class="icon">
-                    <img v-if="!darkMode" src="@/assets/preview.png" alt="">
-                    <img v-else src="@/assets/preview-white.png" alt="">
+                    <img @click="openSlide(slide, index)" v-if="!darkMode" src="@/assets/preview.png" alt="">
+                    <img @click="openSlide(slide, index)" v-else src="@/assets/preview-white.png" alt="">
                   </div>
 
                   <div @click="removeSlideAndClose(slide._id)" class="icon">
@@ -100,6 +101,8 @@ import api from '../../api/courseApi';
 
 import slideCreateComponent from '../slide/slideCreateComponent.vue';
 import slideUpdateComponent from '../slide/slideUpdateComponent.vue';
+
+import { useRouter } from 'vue-router';
 
 import {
   fetchSlides,
@@ -187,6 +190,25 @@ watch(slideRemoved, async () => {
   }
 });
 
+
+// Slide content edit open (slideBoardComponent) logic
+const useRouterCustom = () => {
+  
+  const router = useRouter();
+
+  // To open a course interface and edit the content inside the course overview
+  const openSlide = (slide, index) => {
+    console.log("Sending courseId:", courseId, "Slide index:", index);
+    router.push({ name: 'SlideBoard', params: { id: slide._id, courseId: courseId, slideIndex: index } });
+  };
+  return {
+    openSlide
+  }
+}
+
+const { openSlide } = useRouterCustom();
+
+
 const props = defineProps({
   darkMode: Boolean,
   toggleDarkMode: Function
@@ -218,7 +240,7 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 65px;
+  padding-top: 40px;
 }
 
 .main-div {

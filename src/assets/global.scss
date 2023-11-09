@@ -149,10 +149,6 @@
   opacity: 1; 
 }
 
-.team-content:hover .project-btn-div {
-  opacity: 1; 
-}
-
 .edit-button{
   margin-top: 20px;
   height: 41px;
@@ -177,8 +173,81 @@
 .project-btn-margin{
   margin: 0 10px 10px 0;
 }
-  
 
+
+.cropper-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.cropper-popup img {
+  max-width: 60%;
+  max-height: 60%;
+  margin-bottom: 0 !important;
+  width: auto;
+  height: 50%;
+}
+
+
+
+
+.crop-btn-div{
+  z-index: 100;
+  margin-top: 30%;
+  width: 30%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.checkbox{
+  width: 25px;
+  height: 25px;
+}
+
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .5s ease;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.uploadBtn{
+  display: none;
+}
+
+.newImage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text{
+  color: white;
+  font-size: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
 
 
 

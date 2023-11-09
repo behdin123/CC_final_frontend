@@ -2,6 +2,11 @@ import { ref } from 'vue';
 import { fetchCourses } from '../Crud_operator/Course/courseGetCrud'; 
 import { catalogs, fetchCatalogs } from '../Crud_operator/catalog/catalogGetCrud'; 
 
+import { resetCroppedImage } from '../Crud_operator/Course/courseUpdateCrud';
+
+import placeholderImage from '@/assets/Image_placeholder.jpg';
+
+
 /* const projectBackgroundImage = (project) => {
   return `url(${project.image})`;
 }; */
@@ -78,13 +83,41 @@ function openCourseUpdatePopup(course) {
   selectedCourse.value = course;  
 }
 
-// To close the courseUpdateComponent.vue popup and refresh the courses list
+// To close the courseUpdateComponent.vue popup and refresh the courses list after update
 const onUpdateFinishedCourse = async () => {
   showCourseUpdate.value = false;
   for (const catalog of catalogs.value) {
     catalog.courses = await fetchCourses(catalog._id);
   }
+  resetCroppedImage();
 };
+
+// To close the courseUpdateComponent.vue popup with the close button
+const closeUpdateCourse = async () => {
+  showCourseUpdate.value = false;
+  resetCroppedImage();
+};
+
+// Image for error handling, when a image have error the placeholder image is gonna show up
+const imageError = (event) => {
+  event.target.src = placeholderImage;
+};
+
+
+// capitalize the first letter for name and titles
+const capitalizeFirstLetter = (string) => {
+  if (!string) return '';
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+const capitalizedCatalogName = (catalog) => {
+  return capitalizeFirstLetter(catalog.name);
+};
+
+const capitalizedCourseTitle = (course) => {
+  return capitalizeFirstLetter(course.title);
+};
+
 
 
 
@@ -101,6 +134,7 @@ export{
     openCourseCreation,
     openCourseUpdatePopup,
     onUpdateFinishedCourse,
+    closeUpdateCourse,
 
     // Create catalog popup functions & variables
     showCatalogCreation,
@@ -112,4 +146,11 @@ export{
     selectedCatalog,
     openCatalogUpdatePopup,
     onUpdateFinished,
+
+    // Image placeholder for error in showing a image
+    imageError,
+
+    // capitalize the first letter for name and titles
+    capitalizedCatalogName,
+    capitalizedCourseTitle,
 };

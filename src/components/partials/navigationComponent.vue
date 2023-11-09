@@ -9,7 +9,6 @@
         <div class="nav-links">
           <RouterLink to="/">Frontpage</RouterLink>
           <RouterLink v-if="isLoggedIn" to="/Home">Home</RouterLink>
-          <RouterLink v-if="isLoggedIn" to="/team">Teams</RouterLink>
         </div>
 
         <!-- login & register & logout -->
@@ -181,14 +180,19 @@ a:link {
 }
 
 .login-div-loggedin{
-  margin-right: 30px !important;
+  margin-right: 20px !important;
 }
 
 .user-short {
   display: flex;
   align-items: center;
   cursor: pointer;
-  margin-right: 110px;
+  margin-right: 90px;
+  transition: opacity 0.3s;
+}
+ 
+.user-short:hover{
+  opacity: 0.6;
 }
 
 .user-short__img {

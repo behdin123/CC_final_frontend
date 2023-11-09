@@ -2,6 +2,8 @@ import { ref } from 'vue';
 
 import { first_name } from '../Crud_operator/User/userGetCrud';
 
+import placeholderImage from '@/assets/profile-placeholder.png';
+
 let showPopup = ref(false);
 
 const capitalizedUsername = () => {
@@ -10,11 +12,11 @@ const capitalizedUsername = () => {
 };
 
 const imageError = (event) => {
-  event.target.src = "@/assets/profile-placeholder.png";
+  event.target.src = placeholderImage;
 };
 
 export {
-    showPopup,
-    capitalizedUsername,
-    imageError,
-  };
+  showPopup,
+  capitalizedUsername,
+  imageError,
+};

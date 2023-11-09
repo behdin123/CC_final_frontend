@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import { isLoggedIn } from '../modules/Crud_operator/User/login.js';
 import CourseBoardComponent from '../components/course/courseBoardComponent.vue';
+import SlideBoardComponent from '../components/slide/slideBoardComponent.vue';
 
 
 const router = createRouter({
@@ -29,11 +30,13 @@ const router = createRouter({
       },
     },
     {
-      path: "/team",
-      name: "team",
-      component: () => import("../views/TeamView.vue"),
+      path: '/slide/:id/:courseId/:slideIndex',
+      name: 'SlideBoard',
+      component: SlideBoardComponent,
+      props: true,
       meta: {
         requiresAuth: true, // This route requires authentication
+        hideComponent: true,
       },
     },
   ],

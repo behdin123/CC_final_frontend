@@ -1,8 +1,5 @@
 import { ref } from 'vue';
-import taskApi from '../api/taskApi';
 import api from '../api/courseApi';
-
-import { fetchTasksForColumns } from './Crud_operator/task/taskGetCrud';
 
 const draggingCard = ref(null);
 const draggingColumn = ref(null);
