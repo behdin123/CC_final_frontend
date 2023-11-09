@@ -4,7 +4,7 @@ export default {
   // Create Catalog
   createCatalog: async (data) => {
     try {
-      const response = await axios.post('http://localhost:3000/catalog/create', data, {
+      const response = await axios.post('https://cc-internship-backend.onrender.com/catalog/create', data, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -20,7 +20,7 @@ export default {
   // Get All Catalogs
   getAllCatalogs: async () => {
     try {
-      const response = await axios.get('http://localhost:3000/catalog/list', { withCredentials: true });
+      const response = await axios.get('https://cc-internship-backend.onrender.com/catalog/list', { withCredentials: true });
       console.log("Received data from backend:", response.data);
       return response.data.catalogs;
     } catch (error) {
@@ -32,7 +32,7 @@ export default {
   // Get Catalog by ID
   getCatalogById: async (catalogId) => {
     try {
-      const response = await axios.get(`http://localhost:3000/catalog/${catalogId}`, { withCredentials: true });
+      const response = await axios.get(`https://cc-internship-backend.onrender.com/catalog/${catalogId}`, { withCredentials: true });
       return response.data.catalog;
     } catch (error) {
       console.error('Failed to fetch catalog:', error);
@@ -43,7 +43,7 @@ export default {
   // Update Catalog
   updateCatalog: async (catalogId, updatedCatalog) => {
     try {
-      const response = await axios.put(`http://localhost:3000/catalog/edit/${catalogId}`, updatedCatalog, {
+      const response = await axios.put(`https://cc-internship-backend.onrender.com/catalog/edit/${catalogId}`, updatedCatalog, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -59,7 +59,7 @@ export default {
   // Remove Catalog
   removeCatalog: async (catalogId) => {
     try {
-      const response = await axios.delete(`http://localhost:3000/catalog/remove/${catalogId}`, { withCredentials: true });
+      const response = await axios.delete(`https://cc-internship-backend.onrender.com/catalog/remove/${catalogId}`, { withCredentials: true });
       return response.data;
     } catch (error) {
       console.error('Failed to remove catalog:', error);

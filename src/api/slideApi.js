@@ -14,7 +14,7 @@ export default {
             formData.append('image', slideData.image, slideData.image.name);
         }
 
-        const response = await axios.post(`http://localhost:3000/course/lesson/${lessonId}/create`, formData, { withCredentials: true,
+        const response = await axios.post(`https://cc-internship-backend.onrender.com/course/lesson/${lessonId}/create`, formData, { withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -30,7 +30,7 @@ export default {
 
   getSlidesByCourse: async (courseId) => {
     try {
-      const response = await axios.get(`http://localhost:3000/course/${courseId}/slides`, { withCredentials: true });
+      const response = await axios.get(`https://cc-internship-backend.onrender.com/course/${courseId}/slides`, { withCredentials: true });
       console.log("Slides received:", response.data);
       return response.data.slides;
     } catch (error) {
@@ -41,7 +41,7 @@ export default {
 
   getSlidesByLesson: async (lessonId) => {
     try {
-      const response = await axios.get(`http://localhost:3000/course/lesson/${lessonId}/slides`, { withCredentials: true });
+      const response = await axios.get(`https://cc-internship-backend.onrender.com/course/lesson/${lessonId}/slides`, { withCredentials: true });
       return response.data.slides;
     } catch (error) {
       console.error('Failed to get slides by lesson:', error);
@@ -51,7 +51,7 @@ export default {
 
   getSlideById: async (slideId) => {
     try {
-      const response = await axios.get(`http://localhost:3000/course/slide/${slideId}`, { withCredentials: true });
+      const response = await axios.get(`https://cc-internship-backend.onrender.com/course/slide/${slideId}`, { withCredentials: true });
       return response.data.slide;
     } catch (error) {
       console.error('Failed to get slide by ID:', error);
@@ -62,7 +62,7 @@ export default {
   updateSlide: async (slideId, slideData) => {
     console.log('Attempting to update slide with ID:', slideId, 'Data:', slideData);
     try {
-      const response = await axios.put(`http://localhost:3000/course/${slideId}/update`, slideData, { withCredentials: true });
+      const response = await axios.put(`https://cc-internship-backend.onrender.com/course/${slideId}/update`, slideData, { withCredentials: true });
       return response.data.slide;
     } catch (error) {
       console.error('Failed to update slide:', error);
@@ -73,7 +73,7 @@ export default {
   // Update slide image
   updateSlideImage: async (slideId, formData) => {
     try {
-      const response = await axios.patch(`http://localhost:3000/course/edit-slideImage/${slideId}`, formData, {
+      const response = await axios.patch(`https://cc-internship-backend.onrender.com/course/edit-slideImage/${slideId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -88,7 +88,7 @@ export default {
 
   updateSlideBanner: async (slideId, formData) => {
     try {
-      const response = await axios.patch(`http://localhost:3000/course/edit-slideBanner/${slideId}`, formData, {
+      const response = await axios.patch(`https://cc-internship-backend.onrender.com/course/edit-slideBanner/${slideId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -103,7 +103,7 @@ export default {
 
   updateSlideFooter: async (slideId, formData) => {
     try {
-      const response = await axios.patch(`http://localhost:3000/course/edit-slideFooter/${slideId}`, formData, {
+      const response = await axios.patch(`https://cc-internship-backend.onrender.com/course/edit-slideFooter/${slideId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -121,7 +121,7 @@ export default {
       const formData = new FormData();
       formData.append('video', updatedVideo, updatedVideo.name);
 
-      const response = await axios.patch(`http://localhost:3000/course/edit-slideVideo/${slideId}`, formData, {
+      const response = await axios.patch(`https://cc-internship-backend.onrender.com/course/edit-slideVideo/${slideId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -136,7 +136,7 @@ export default {
 
   deleteSlide: async (slideId) => {
     try {
-      await axios.delete(`http://localhost:3000/course/${slideId}/delete`, { withCredentials: true });
+      await axios.delete(`https://cc-internship-backend.onrender.com/course/${slideId}/delete`, { withCredentials: true });
     } catch (error) {
       console.error('Failed to delete slide:', error);
       throw error;
@@ -145,7 +145,7 @@ export default {
 
   updateSlideLesson: async (slideId, lessonId) => {
     try {
-      const response = await axios.put(`http://localhost:3000/course/${slideId}/update-lesson`, { lessonId }, { withCredentials: true });
+      const response = await axios.put(`https://cc-internship-backend.onrender.com/course/${slideId}/update-lesson`, { lessonId }, { withCredentials: true });
       return response.data.slide;
     } catch (error) {
       console.error('Failed to update slide lesson:', error);
@@ -155,7 +155,7 @@ export default {
 
   uploadPdf: async (pdfData) => {
     try {
-      const response = await axios.post(`http://localhost:3000/course/slide/upload-pdf`, pdfData, { withCredentials: true });
+      const response = await axios.post(`https://cc-internship-backend.onrender.com/course/slide/upload-pdf`, pdfData, { withCredentials: true });
       return response.data.slides;
     } catch (error) {
       console.error('Failed to upload PDF:', error);
