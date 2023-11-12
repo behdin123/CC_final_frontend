@@ -34,8 +34,10 @@
                                 <h2>{{ slide.title }}</h2>
                                 <p class="slide-text-content" v-html="slide.text" v-if="slide.text"></p>
                             </div>
-                            <div class="slide-image" v-if="slide.image" ref="previewImageRef">
-                                <img :src="slide.image">
+                            <div class="image-container-edit" ref="previewImageRef">
+                                <div class="slide-image" v-if="slide.image">
+                                    <img :src="slide.image">
+                                </div>
                             </div>
                         </div>
                         
@@ -102,17 +104,47 @@
                                     placeholder="Enter Slide Content"></div>
                                 </div>
                             </div>
-                            <div class="slide-image editable-field" ref="slideImageRef">
-                                <img v-if="!slide.image" src="@/assets/Image_placeholder.jpg">
-                                <img v-if="slide.image && !selectedImageUrl" :src="slide.image">
-                                <img v-if="selectedImageUrl" :src="selectedImageUrl" alt="Slide Image"/>
 
-                                <div class="overlay">
-                                    <input class="input uploadBtn" type="file" @change="event => onFileChange(event.target.files[0], 'image')" accept="image/*" ref="imageInput">
-                                    <div class="text newImage" @click="ImageFileUpload">Upload new Image</div>
+                            <div class="image-container-edit" ref="slideImageRef">
+                                <div class="hover-box" :class="{ 'hover-box-image-visible': isHoverBoxImageVisible }">
+                                    <div class="flex crop-div">
+                                        <img class="crop" @click="initializeCropper" src="@/assets/toolbar/cropper.png" alt="">
+                                        <div v-show="showCropper" class="separator"></div>
+                                        <img v-show="showCropper" @click="setOneToOneAspectRatio" src="@/assets/toolbar/oneToOneV1.png" alt="">
+                                        <img v-show="showCropper" @click="setSixteenToNineAspectRatio" src="@/assets/toolbar/sixtenTonineV1.png" alt="">
+                                        <img v-show="showCropper" @click="setNineTonineSixtenAspectRatio" src="@/assets/toolbar/nineToninesixtenV1.png" alt="">
+                                    </div>
+
+                                    <img class="trash" @click="deleteImage" src="@/assets/toolbar/trash.png" alt="">
                                 </div>
+                                <div class="slide-image editable-field" @click="handleFocusImage">
+                                    
+                                    <img v-if="!slide.image" src="@/assets/Image_placeholder.jpg">
+                                    <img v-if="slide.image && !selectedImageUrl" :src="slide.image">
+                                    <img v-if="selectedImageUrl" :src="selectedImageUrl" ref="cropperImage" alt="Slide Image"/>
+
+                                    
+
+                                    <div class="overlay">
+                                        <input class="input uploadBtn" type="file" @change="event => onFileChange(event.target.files[0], 'image')" accept="image/*" ref="imageInput">
+                                        <div class="text newImage" @click="ImageFileUpload">Upload new Image</div>
+                                    </div>
+
+                                    
+                                </div>
+
+                                <div class="crop-container" v-show="showCropper">
+                                    <div class="crop-btn-div">
+                                        <button class="button Update-button" @click="applyCrop">Crop</button>
+                                        <button class="button" @click="cancelCrop">Cancel</button>
+                                    </div> 
+                                </div>
+
                             </div>
                         </div>
+
+                            
+                       
                         
                         <div class="slide-footer editable-field">
                             <img v-if="!slide.footer && !selectedFooterUrl" src="@/assets/placeholder-banner.png">
@@ -139,9 +171,9 @@
 
 <script setup>
 import { defineProps, computed, onMounted, ref, watch, nextTick } from 'vue';
-import { useRoute } from 'vue-router';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import {
+  // CRUD operations
   onFileChange,
   updatedSlide,
   selectedImage,
@@ -156,74 +188,132 @@ import {
     slidesByCourse,
     fetchSlidesByCourse,
 } from '../../modules/Crud_operator/slide/slideGetCrud';
-
 import {
-
- // to show the toolbar when clicking inside the text area
+ // To show the toolbar when clicking inside the text area
  isHoverBoxTitleVisible,
  isHoverBoxTextVisible,
+ isHoverBoxImageVisible,
  handleFocusText,
  handleFocusTitle,
+ handleFocusImage,
 } from '../../modules/Main_logic/toolbar.js';
-
 import { debounce } from 'lodash-es';
+import Cropper from 'cropperjs';
+import 'cropperjs/dist/cropper.css';
 
-const route = useRoute();
-const router = useRouter();
 
-const goBack = () => {
-    router.go(-1); // Go one page back
+/*
+*
+* Logic for cropping image *
+* 
+*/
+const cropperImage = ref(null);
+let cropper = null;
+let showCropper = ref(false);
+let croppedImage = ref(null);
+
+const setOneToOneAspectRatio = () => {
+  if (cropper) {
+    cropper.setAspectRatio(1); // Sætter aspect ratio til 1:1
+  }
+};
+
+const setSixteenToNineAspectRatio = () => {
+  if (cropper) {
+    cropper.setAspectRatio(16 / 9); // Sætter aspect ratio til 16:9
+  }
+};
+
+const setNineTonineSixtenAspectRatio = () => {
+  if (cropper) {
+    cropper.setAspectRatio(9 / 16); // Sætter aspect ratio til 16:9
+  }
 };
 
 
-// fetches the slideId
-const slideId = route.params.id;
+const initializeCropper = () => {
+  if (cropperImage.value && !cropper) {
+
+      cropper = new Cropper(cropperImage.value, {
+      aspectRatio: NaN, // Tillader brugeren at justere aspect ratio
+      crop(event) {
+        console.log(event.detail.width);
+        console.log(event.detail.height);
+      },
+    });
+
+    showCropper.value = true;
+  }
+};
+
+
+const applyCrop = async () => {
+  if (cropper) {
+    const croppedCanvas = cropper.getCroppedCanvas();
+    const dataUrl = croppedCanvas.toDataURL('image/jpeg', 0.4); // Konverter til data URL
+
+    const response = await fetch(dataUrl);
+    croppedImage.value = await response.blob(); // Konverter til blob
+    selectedImage.value = croppedImage.value; // Opdater selectedImage med det beskårne billede
+
+    cropper.destroy();
+    cropper = null;
+    showCropper.value = false; // Skjul Crop og Cancel knapper
+  }
+};
+
+const cancelCrop = () => {
+  showCropper.value = false;
+  if (cropper) {
+    cropper.destroy();
+    cropper = null;
+  }
+};
+
+
+
+/*
+*
+* Logic for chaging slide (next button and previous button) *
+*
+*/
+
+// Reactive references and values
+const route = useRoute();
+const router = useRouter();
+const slideId = ref(route.params.id);
 const slide = ref({});
+const currentSlide = ref(1); // Represents the current slide number
+const totalSlides = ref(0); // Total number of slides in the course
+const courseId = ref(null); // ID of the current course
 
 
-onMounted(async () => {
-    //fetches the slide values by slideId with fetchSlideById
-    try {
-        slide.value = await fetchSlideById(slideId);
-
-        // takes the slide values and sets it equal to the edit values for edit mode
-        editableSlide.value = { ...slide.value };
-
-        await nextTick();
-
-        // takes the imageWidthPercent and sets it equal to the width og previewImageRef with is the ref to slide-image image div in preview mode
-         if (slide.value.imageWidthPercent) {
-            if (mode.value === 'preview' && previewImageRef.value) {
-                previewImageRef.value.style.width = `${slide.value.imageWidthPercent}%`;
-            } 
-        }
-    } catch (error) {
-        console.error("Error fetching slide:", error);
-    }
-});
-
-const currentSlide = ref(1); // Start fra slide 1
-const totalSlides = ref(0); // Antallet af slides
-const courseId = ref(null);
-
-
+// Initialize the component with data for the selected slide
 onMounted(async () => {
     courseId.value = route.params.courseId;
     const slideIndex = parseInt(route.params.slideIndex, 10);
     console.log("Received courseId:", courseId.value, "Received slideIndex:", slideIndex);
     try {
-        const slides = await fetchSlidesByCourse(courseId.value);
+        const slides = await fetchSlidesByCourse(courseId.value); //gets all the slides for this course, to get the totalSlides value
         slidesByCourse.value = slides;
         totalSlides.value = slides.length;
         currentSlide.value = slideIndex + 1;
+        await displayCurrentSlide();
         console.log("Total slides:", totalSlides.value, "Current slide:", currentSlide.value);
+        console.log("progressBarWidth:", progressBarWidth.value);
     } catch (error) {
         console.error('Error fetching slides:', error);
     }
 });
 
-// Opdaterer progress bar baseret på den nuværende slide
-const progressBarWidth = computed(() => (currentSlide.value / totalSlides) * 100);
+// Navigation control to go back to course overview from the slide preview
+const goBack = () => {
+    router.push({ name: 'CourseBoard', params: { id: courseId.value } }); 
+};
+
+
+// Update progressBar based on the current slide compared to the totalSlides value
+const progressBarWidth = computed(() => (currentSlide.value / totalSlides.value) * 100);
 
 const goToNextSlide = () => {
     if (currentSlide.value < totalSlides.value) {
@@ -241,134 +331,149 @@ const goToPreviousSlide = () => {
 
 const navigateToSlide = () => {
     const slideIndex = currentSlide.value - 1;
-    // Antag at du har en måde at hente slide ID baseret på index. 
     const slideId = getSlideIdByIndex(slideIndex); 
     router.push({ name: 'SlideBoard', params: { id: slideId, courseId: courseId.value, slideIndex: slideIndex } });
 };
 
 // Funktion til at finde slide ID baseret på index. 
-// Du skal implementere denne funktion baseret på, hvordan du gemmer slides-data.
 const getSlideIdByIndex = (index) => {
-    // Implementer logikken for at finde slide ID her
     return slidesByCourse.value[index]._id;
 };
 
+// Display the current slide on the page with the correct values and parameters 
 const displayCurrentSlide = async () => {
     try {
-        const slide = await fetchSlideById(slideId);
-        // Opdater din komponenttilstand med den nye slide-data
-        // For eksempel, hvis du viser slide-titel eller indhold
-        // currentSlideData.value = slide;
+        const currentSlideId = getSlideIdByIndex(currentSlide.value - 1);
+        slideId.value = currentSlideId;
+        const fetchedSlide = await fetchSlideById(currentSlideId);
+        slide.value = fetchedSlide; // Updates slide data with the fetchedSlide
+
+        // Updates editableSlide and image width based on the new slide
+        editableSlide.value = { ...fetchedSlide };
+        if (mode.value === 'preview' && previewImageRef.value && fetchedSlide.imageWidthPercent) {
+            previewImageRef.value.style.width = `${fetchedSlide.imageWidthPercent}%`;
+        }
+
     } catch (error) {
         console.error('Error fetching slide:', error);
     }
 };
 
-watch(() => route.params, (newParams) => {
-    // Opdaterer currentSlide og henter data, når URL-parametre ændres
+// Watches for route parameter changes to dynamically update the slide
+watch(() => route.params, async (newParams) => {
     courseId.value = newParams.courseId;
     const slideIndex = parseInt(newParams.slideIndex, 10);
     currentSlide.value = slideIndex + 1;
-    displayCurrentSlide();
-    // Du kan også tilføje logikken for at hente slide-data her, hvis det er nødvendigt
+    await displayCurrentSlide();
 }, { immediate: true });
 
 
 
 
 
-// 2 Modes for this page - preview mode for showing the slide & edit mode for 
+// 2 Modes for this page - preview mode for showing the slide & edit mode
 const mode = ref('preview');
 const editableSlide = ref({});
+
 const toggleMode = () => {
     mode.value = mode.value === 'preview' ? 'edit' : 'preview';
+    if (mode.value === 'edit') {
+        nextTick(() => {
+            if (textAreaRef.value && editableSlide.value.text) {
+                textAreaRef.value.innerHTML = editableSlide.value.text;
+            }
+        });
+    }
 };
 
-watch(mode, async (newMode) => {
-  // Vent på at DOM-opdateringer er færdige
-  await nextTick();
 
-  console.log('Mode changed to:', newMode);
-  console.log('Image width percent:', slide.value.imageWidthPercent);
-  console.log('Preview image ref:', previewImageRef.value);
-  console.log('Slide image ref:', slideImageRef.value);
-  console.log('selectedImageUrl:', selectedImageUrl.value);
+// Watch for changes in the slide data to update the editableSlide, when a new slide is loaded, the data is reflected in the edit mode
+watch(() => slide.value, (newSlide) => {
+    // Update editableSlide when slide data changes
+    editableSlide.value = { ...newSlide };
+
+    if (mode.value === 'edit' && textAreaRef.value) {
+        // Update the textAreaRef with the new content
+        textAreaRef.value.innerHTML = newSlide.text;
+    }
+}, { deep: true });
+
+
+// Watch for changes in the preview/edit mode to handle UI updates accordingly.
+watch(mode, async (newMode) => {
+  // Wait for DOM updates to complete
+  await nextTick();
 
   if (newMode === 'preview') {
     if (previewImageRef.value) {
       previewImageRef.value.style.width = `${slide.value.imageWidthPercent}%`;
-      selectedImageUrl.value = '';
+      selectedImage.value = '';
     }
+    // Cancel text updates if changed to preview mode to prevent unintended text saving
     debounceUpdateContent.cancel();
     isHoverBoxTextVisible.value = false;
+    isHoverBoxImageVisible.value = false;
   } else if (newMode === 'edit') {
     if (slideImageRef.value) {
       slideImageRef.value.style.width = `${slide.value.imageWidthPercent}%`;
     }
-    // Opdater textAreaRef hvis det er defineret og der er tekst at vise
+    // Update textAreaRef if it is defined and there is text to display
     if (textAreaRef.value && editableSlide.value.text) {
         textAreaRef.value.innerHTML = editableSlide.value.text;
     }
   }
 });
 
+
+
+/*
+*
+* Logic for text edit toolbar *
+*
+*/
+
 // Logic for the slide.text edit and update the text style
 const textAreaRef = ref(null);
 
-// update behavior
-const updateContent = () => {
-    const textAreaElement = textAreaRef.value;
-    if (textAreaElement) {
-        editableSlide.value.text = textAreaElement.innerHTML; 
-    }
-};
-
-const debounceUpdateContent = debounce(updateContent, 500);
+// update text behavior
+const debounceUpdateContent = debounce(updateEditableContent, 500);
 
 
-// Function to increase font size of selected text
-function increaseFontSize() {
-    applyStyleToSelection('increase');
-}
-
-// Function to decrease font size of selected text
-function decreaseFontSize() {
-    applyStyleToSelection('decrease');
-}
-
+// function to update the Font size of selected text
 function applyStyleToSelection(action) {
     const selection = window.getSelection();
     if (!selection.rangeCount) return;
 
-    const range = selection.getRangeAt(0);
+    let range = selection.getRangeAt(0);
+    range = trimRangeWhitespace(range);
     const selectedText = range.toString();
     if (!selectedText) return; // Do nothing if no text is selected
 
     let spanToStyle;
 
-    // Tjek om den valgte tekst er indkapslet i en span
+    // Check if the selected text is in a span
     let parentNode = range.commonAncestorContainer;
     if (parentNode.nodeType !== Node.ELEMENT_NODE) {
         parentNode = parentNode.parentNode;
     }
 
     if (parentNode.nodeName === 'SPAN' && range.toString() === parentNode.textContent) {
-        // Brug eksisterende span, hvis det kun dækker det valgte område
+        // Use existing span if it only covers the selected area
         spanToStyle = parentNode;
     } else {
-        // Ellers, opret ny span omkring det valgte tekst
+        // Or, create new span around the selected text
         spanToStyle = document.createElement('span');
         spanToStyle.textContent = selectedText;
         range.deleteContents();
         range.insertNode(spanToStyle);
     }
 
-    // Beregn og anvend den nye skriftstørrelse
+    // Calculate and apply the new font size
     const currentFontSize = parseInt(window.getComputedStyle(spanToStyle, null).fontSize);
     const newFontSize = action === 'increase' ? currentFontSize + 1 : Math.max(12, currentFontSize - 1);
     spanToStyle.style.fontSize = `${newFontSize}px`;
 
-    // Opdater valget
+    // Update the selection
     const newRange = document.createRange();
     newRange.selectNodeContents(spanToStyle);
     selection.removeAllRanges();
@@ -377,15 +482,23 @@ function applyStyleToSelection(action) {
     updateEditableContent();
 }
 
+// click handlers
+function increaseFontSize() {
+    applyStyleToSelection('increase');
+}
 
+function decreaseFontSize() {
+    applyStyleToSelection('decrease');
+}
 
-
+// function to update the text style (bold, italic, underline) of selected text
 function applyStyle(styleType) {
     const selection = window.getSelection();
     if (!selection.rangeCount) return;
 
     let range = selection.getRangeAt(0);
-    if (range.collapsed) return; // Intet er valgt
+    range = trimRangeWhitespace(range);
+    if (range.collapsed) return; // No text selected
 
     let styleProperty, styleValue;
     switch (styleType) {
@@ -402,7 +515,7 @@ function applyStyle(styleType) {
             styleValue = 'underline';
             break;
         default:
-            return; // Ugyldig styleType
+            return; 
     }
 
     const selectedContent = range.extractContents();
@@ -428,24 +541,11 @@ function applyStyle(styleType) {
         range.insertNode(selectedContent);
     }
 
-    // Opdater valget for at bevare det oprindelige valgte område
+    // Update the the chosen text the keep the selected area selected
     selection.removeAllRanges();
     selection.addRange(range);
 
     updateEditableContent();
-}
-
-
-
-
-
-
-
-function updateEditableContent() {
-    // Opdater indholdet i det redigerbare område
-    if (textAreaRef && textAreaRef.value) {
-        editableSlide.value.text = textAreaRef.value.innerHTML;
-    }
 }
 
 // click handlers
@@ -461,16 +561,14 @@ function applyUnderline() {
     applyStyle('underline');
 }
 
-
-
-
-
+// function to remove any text style (bold, italic, underline) of selected text
 function applyPlainText() {
     const selection = window.getSelection();
     if (!selection.rangeCount) return;
 
-    const range = selection.getRangeAt(0);
-    if (range.collapsed) return; // Intet er valgt
+    let range = selection.getRangeAt(0);
+    range = trimRangeWhitespace(range);
+    if (range.collapsed) return; // No text selected
 
     // Extracts the selected content
     const selectedContent = range.extractContents();
@@ -488,10 +586,10 @@ function applyPlainText() {
     selection.removeAllRanges();
     selection.addRange(newRange);
 
-    // Update the editable content's innerHTML
     updateEditableContent();
 }
 
+// function to make sure that the selected text is only text and now white space is selected
 function trimRangeWhitespace(range) {
     let startContainer = range.startContainer;
     let endContainer = range.endContainer;
@@ -512,31 +610,32 @@ function trimRangeWhitespace(range) {
         }
     }
 
-    // Opdater range
+    // Update range
     const newRange = document.createRange();
     newRange.setStart(startContainer, startOffset);
     newRange.setEnd(endContainer, endOffset);
     return newRange;
 }
 
+// function to unwrap span and div elements in (inner.html)
 function unwrapElement(el) {
     const parent = el.parentNode;
     while (el.firstChild) {
         parent.insertBefore(el.firstChild, el);
     }
     parent.removeChild(el);
-    parent.normalize(); // Flet sammenhængende tekstnoder
+    parent.normalize(); // Merge text nodes
 }
 
-
+// function to remove empty span and div elements in (inner.html)
 function removeEmptyElements(element) {
     const elements = element.querySelectorAll('span, div');
     elements.forEach(el => {
-        // Tjekker om elementet er et span eller div uden direkte tekstindhold
+        // Checks if the element is a span or div with no direct text content
         if (!el.textContent.trim()) {
             unwrapElement(el);
         } else if (el.tagName === 'SPAN' && !el.style.cssText.trim()) {
-            // Tjekker om alle børnelementer er spans uden yderligere indhold eller stil
+            // Checks if all child elements in the selected area are spans with no text or style
             let allChildrenAreEmptySpans = Array.from(el.children).every(child => 
                 child.tagName === 'SPAN' && !child.textContent.trim() && !child.style.cssText.trim()
             );
@@ -548,11 +647,16 @@ function removeEmptyElements(element) {
     });
 }
 
+// function to Update the content of the editable area
+function updateEditableContent() {
+    if (textAreaRef && textAreaRef.value) {
+        editableSlide.value.text = textAreaRef.value.innerHTML;
+    }
+}
 
-
+// Watch for changes and then remove empty spans and divs from the editable area
 watch(() => editableSlide.value.text, (newText) => {
   if (textAreaRef.value) {
-    // Fjern tomme spans og divs fra det redigerbare område
     removeEmptyElements(textAreaRef.value);
   }
 }, { deep: true });
@@ -562,9 +666,11 @@ watch(() => editableSlide.value.text, (newText) => {
 
 
 
-
-
-// variables for banner, image and footer and the functions to choose a new image for them
+/*
+*
+* Logic for image, banner and footer upload -  applyDynamicWidth - saveSlide after edit*
+*
+*/
 const bannerInput = ref(null);
 const imageInput = ref(null);
 const footerInput = ref(null);
@@ -581,8 +687,6 @@ const FooterFileUpload = () => {
     footerInput.value.click();
 };
 
-
-
 // variables for refrence to the slide-image image div in preview and edit mode 
 const slideImageRef = ref(null);
 const previewImageRef = ref(null);
@@ -594,9 +698,9 @@ const applyDynamicWidth = (imageElement, imageRef) => {
     const height = imageElement.naturalHeight;
     const aspectRatio = width / height;
 
-    const minWidthPercent = 15;
+    const minWidthPercent = 10;
     const squareWidthPercent = 40;
-    const maxWidthPercent = 50;
+    const maxWidthPercent = 45;
 
     let widthPercent;
     if (aspectRatio <= 1) {
@@ -634,10 +738,10 @@ watch(() => slide.value.image, (newImage) => {
   }
 });
 
-
+// function to save and update the edits made in edit mode
 const saveSlide = async () => {
     try {
-        updatedSlide.value._id = slideId;
+        updatedSlide.value._id = slideId.value;
         updatedSlide.value.title = editableSlide.value.title;
         updatedSlide.value.text = editableSlide.value.text;
 
@@ -645,7 +749,7 @@ const saveSlide = async () => {
         await handleUpdateSlide();
 
         // Reload slide data
-        slide.value = await fetchSlideById(slideId);
+        slide.value = await fetchSlideById(slideId.value);
 
         // Skift tilbage til preview mode
         mode.value = 'preview';
@@ -701,13 +805,13 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 40px;
+  padding-top: 30px;
 }
 
 .Mode-change{
     position: absolute;
     z-index: 10;
-    top: 40px;
+    top: 30px;
     left: 20px;
 }
 
@@ -757,7 +861,7 @@ main {
 .Slide-edit-container {
     padding: 50px;
     width: 70vw;
-    height: 85%;
+    max-height: 95%;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     margin: 0px auto 0px auto;
     overflow: hidden;
@@ -765,7 +869,7 @@ main {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .preview-mode {
@@ -784,6 +888,9 @@ main {
     justify-content: space-between;
     padding: 0 20px;
     box-sizing: border-box;
+    min-height: 50vh;
+    max-height: 50vh;
+    overflow: hidden;
 }
 
 section h2{
@@ -794,7 +901,7 @@ section h2{
 
 section p{
     font-size: 18px;
-    max-height: 480px;
+    max-height: 80%;
     overflow: hidden;
 }
 
@@ -854,7 +961,6 @@ margin-top: 20px;
 }
 
 .slide-image{
-    width: 300px;
     height: auto;
     position: relative;
     align-items: flex-start !important;
@@ -865,10 +971,9 @@ margin-top: 20px;
     height: auto;
 }
 
-@media screen and (min-width: 2000px) {
-  .slide-image {
-    width: 300px;
-  }
+.image-container-edit{
+    position: relative;
+    width: 40%;
 }
 
 button {
@@ -909,8 +1014,7 @@ button {
 }
 
 .slide-banner{
-    margin-bottom: 30px;
-    
+    margin-bottom: 15px;
 }
 
 .slide-banner img{
@@ -948,15 +1052,24 @@ button {
     height: 40px !important;
 }
 
+.hover-box-image-visible{
+    height: 40px !important;
+}
+
 .hover-box img{
     width: auto;
-    height: 30px;
+    height: 25px;
     transition: opacity 0.2s ease; 
     cursor: pointer;
 }
 
 .hover-box img:hover{
     opacity: 0.6;
+}
+
+.crop-div{
+    width: 60%;
+    justify-content: space-between;
 }
 
 button{
@@ -981,8 +1094,25 @@ button{
 
 .progress {
     height: 100%;
-    background-color: blue;
+    background-color: #1F7698;
     width: 0%; /* Initial width */
+}
+
+.separator {
+  height: 20px;
+  border-left: 2px solid #909090;
+  margin: 10px 0;
+}
+
+.crop-container{
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+
+.crop-btn-div{
+    width: 100%;
+    margin: 0 !important;
 }
 
 @media screen and (max-width: 2000px) {
@@ -1000,7 +1130,6 @@ section h2 {
 
 .Slide-edit-container {
   width: 65vw;
-  height: 90%;
   padding: 30px 20px 30px 20px;
   overflow: hidden;
   transition: background-color 0.3s ease;

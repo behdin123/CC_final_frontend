@@ -2,6 +2,9 @@ import { ref, computed } from 'vue';
 import api from '../../../api/slideApi.js'; 
 
 
+
+
+
 const { updateSlide, updateSlideImage, updateSlideBanner, updateSlideFooter, updateSlideVideo } = api; 
 
 const updatedSlide = ref({
@@ -37,9 +40,6 @@ const selectedFooterUrl = computed(() => {
 
 
 const onFileChange = (file, type) => {
-  console.log("File change event triggered for type:", type);
-  console.log("Selected file:", file); 
-
   switch (type) {
     case 'image':
       selectedImage.value = file;
@@ -68,8 +68,9 @@ const handleUpdateSlide = async () => {
     // Opdater slide image, hvis der er et nyt billede
     if (selectedImage.value) {
       const imageFormData = new FormData();
-      imageFormData.append('image', selectedImage.value, selectedImage.value.name);
+      imageFormData.append('image', selectedImage.value, "cropped-image.jpg");
       imageFormData.append('imageWidthPercent', imageWidthPercent.value.toString());
+
       await updateSlideImage(updatedSlide.value._id, imageFormData);
     }
 

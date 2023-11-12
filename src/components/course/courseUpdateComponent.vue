@@ -52,7 +52,7 @@
                     <!-- The profile picture -->
                     <img v-if="!course.image" src="@/assets/Image_placeholder.jpg" alt="Profile Picture">
 
-                    <img v-if="course.image && !croppedImageUrl" :src="course.image" alt="Profile Picture">
+                    <img v-if="course.image && !croppedImageUrl" :src="course.image" alt="Profile Picture" @error="imageError">
                     <img v-if="croppedImageUrl" :src="croppedImageUrl" alt="Profile Picture"  @error="imageError">
 
                     <div class="overlay">
