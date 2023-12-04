@@ -11,6 +11,12 @@
 
           <div class="button-div">
             <div class="card">
+
+                <button class="upload-PDF" @click="showPdfUpload">
+                  Upload PDF
+                  <img src="@/assets/pdf-file.png" alt="">
+                </button>
+
                 <button @click=" openSlideCreation(selectedLesson);">
                   NEW Slide
                   <span class="plus-icon"></span>
@@ -33,38 +39,80 @@
               </div>
             </div>
 
-            <div class="slide-container" v-for="(slide, index) in displayedSlides" :key="slide._id">
+            <div class="slide-info-container">
+              <div class="slide-info-box">
+                <div class="slide-info-div">
+                  <p>Name</p>
+                </div>
+                <div class="slide-info-div">
+                  <p>Description</p>
+                </div>
+                <div class="slide-info-div">
+                  <p>Modified</p>
+                </div>
+              </div>
+              <div class="slide-info-div edit-div">
+                <p>Edit</p>
+              </div>
+            </div>
 
-                <div class="slide-title-div">
+            <div class="line"></div>
+
+            <div class="slide-container" v-for="slide in displayedSlidesWithGlobalIndex" :key="slide._id">
+
+              <div class="slide-information-printet">
+
+                <div class="slide-title-div slide-value">
                   <div class="edit icon" @click="openSlideUpdate(slide)">
                     <img src="@/assets/pencil.png" alt="">
-                    
+                    <div class="label">
+                      <p>Edit slide</p>
+                    </div>
                   </div>
 
-                  <div class="slide-title"> {{ index + 1 }}.{{ slide.title }}</div>
+                  <div class="slide-title"> {{ slide.globalIndex }}.{{ slide.title }}</div>
                 </div>
+
+                <div class="slide-value slide-description">
+                  <p>{{ slide.description }}</p>
+                </div>
+
+                <div class="slide-value">
+                  {{ new Date(slide.updatedAt).toLocaleDateString() }}
+                </div>
+
+              </div>
+
                 
                 <div class="edit-icon-div">
                   <div class="icon">
-                    <img v-if="!darkMode" src="@/assets/copying.png" alt="">
-                    <img v-else src="@/assets/copying-white.png" alt="">
+                    
+                    <img class="icon-image" v-if="!darkMode" src="@/assets/copying.png" alt="">
+                    <img class="icon-image" v-else src="@/assets/copying-white.png" alt="">
+                    <div class="label">
+                      <p>Copy slide</p>
+                    </div>
                   </div>
 
                   <div class="icon">
-                    <img @click="openSlide(slide, index)" v-if="!darkMode" src="@/assets/preview.png" alt="">
-                    <img @click="openSlide(slide, index)" v-else src="@/assets/preview-white.png" alt="">
+                    <img class="icon-image" @click="openSlide(slide, slide.globalIndex)" v-if="!darkMode" src="@/assets/preview.png" alt="">
+                    <img class="icon-image" @click="openSlide(slide, slide.globalIndex)" v-else src="@/assets/preview-white.png" alt="">
+                    <div class="label">
+                      <p>Preview slide</p>
+                    </div>
                   </div>
 
-                  <div @click="removeSlideAndClose(slide._id)" class="icon">
-                    <img src="@/assets/trash.png" alt="">
+                  <div @click="showAlert(slide._id)" class="icon">
+                    <img class="icon-image" src="@/assets/trash.png" alt="">
+                    <div class="label">
+                      <p>Delete slide</p>
+                    </div>
                   </div>
                 </div>
 
             </div>
 
           </div>
-
-          <div class="line"></div>
  
         </div>
 
@@ -75,7 +123,11 @@
     <!-- slide creation popup -->
     <div class="flex">
       <div>
-        <slide-create-component @close="closeSlideCreation" :showSlideCreation="showSlideCreation" />
+        <slide-create-component @close="closeSlideCreation" 
+        :showSlideCreation="showSlideCreation" 
+        :globalIndex="GlobalIndexForSlide()" 
+        :lessonId="currentLessonId" 
+        :courseId="courseId"/>
       </div>
     </div>
 
@@ -89,20 +141,36 @@
       </div>
     </div>
 
+    <!-- slide Pdf popup -->
+    <div class="flex">
+      <div>
+        <slide-pdf-component v-if="showSlidePdf"
+        :selectedLesson="selectedLesson"
+        :globalIndex="GlobalIndexForSlide()"
+        :courseId="courseId"
+        @close="closeSlidePdf" />
+      </div>
+    </div>
+
+     <!-- slide Delete popup -->
+    <alert-component ref="alertBox" title="Confirm Delete" message="Are you sure to delete the slide?" @confirm="confirmDelete"/>
+
    </main>
 </template>
   
 
 <script setup>
 
-import { ref, onMounted, defineProps, watch, computed } from 'vue';
+import { ref, onMounted, defineProps, watch, computed, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import api from '../../api/courseApi';
 
+// popups import
 import slideCreateComponent from '../slide/slideCreateComponent.vue';
 import slideUpdateComponent from '../slide/slideUpdateComponent.vue';
-
-import { useRouter } from 'vue-router';
+import SlidePdfComponent from '../slide/slidePdfComponent.vue';
+import AlertComponent from '../user/AlertComponent.vue';
 
 import {
   fetchSlides,
@@ -111,11 +179,8 @@ import {
 import { 
   lessons,
   selectedLesson,
-/*   drop, 
-  dragEnter,
-  dragLeave, */
   fetchLessons,
-} from '../../modules/columns';
+} from '../../modules/lessons';
 
 import {
     // select Lesson popup functions & variables
@@ -131,26 +196,110 @@ import {
     showSlideUpdate,
     openSlideUpdate,
     closeSlideUpdate,
-    slideRemoved,
-    removeSlideAndClose,
+
+    // slide PDF popup
+    showSlidePdf,
+    showPdfUpload,
+    closeSlidePdf,
 } from '../../modules/Main_logic/courseBoard';
 
+import { removeSlide } from '../../modules/Crud_operator/slide/slideRemoveCrud.js';
+import { fetchSlidesByCourse } from "../../modules/Crud_operator/slide/slideGetCrud";
+
+
+
+// slide remove logic
+const alertBox = ref(null);
+const selectedSlideId = ref(null);
+
+const showAlert = (slideId) => {
+  selectedSlideId.value = slideId;
+  alertBox.value.show();
+};
+
+const confirmDelete = async () => {
+  if (selectedSlideId.value) {
+    await removeSlide(selectedSlideId.value);
+
+    // Update slides for the chossen lesson after the slide is deleted
+    // To show that the slide is deleted "to the user"
+    if (selectedLesson.value) {
+      await fetchSlides(selectedLesson.value);
+    }
+
+    // Fetch slides for the whole course
+    // To be able to create new slides without problem for the order and its global Index 
+     await fetchSlidesByCourse(courseId);
+  }
+};
 
 
 
 
-const displayedSlides = computed(() => {
-      if(!selectedLesson.value) return [];
+// Total slides which is beofre the new slides which we gonna create
+const totalSlidesBeforeLesson = (lessonId) => {
+  const lessonIndex = lessons.value.findIndex(l => l._id === lessonId);
+  if (lessonIndex <= 0) return 0;
   
-      const lesson = lessons.value.find(l => l._id === selectedLesson.value);
-      
-      console.log('Selected Lesson:', lesson);
-  
-      return lesson ? lesson.slides : [];
-});  
+  return lessons.value
+         .slice(0, lessonIndex)
+         .reduce((acc, lesson) => acc + lesson.slides.length, 0);
+};
 
+
+// Find the existing slides for the lesson and taking the Total slides before it and then calculate the new index for the new slide
+const displayedSlidesWithGlobalIndex = computed(() => {
+  if (!selectedLesson.value) return [];
+
+  const lesson = lessons.value.find(l => l._id === selectedLesson.value);
+
+  if (!lesson || !lesson.slides) {
+        // If no slides, return empty array
+        return [];
+    }
+
+    const offset = totalSlidesBeforeLesson(selectedLesson.value);
+    return lesson.slides.map((slide, index) => ({ ...slide, globalIndex: index + 1 + offset }));
+});
+
+
+
+// A function to calculate index fot the new slide to use for the slide array in backend (making the order in slideCreateComponent.vue)
+const GlobalIndexForSlide = () => {
+  const totalBefore = totalSlidesBeforeLesson(selectedLesson.value);
+  return totalBefore + displayedSlidesWithGlobalIndex.value.length + 1;
+};
+
+
+
+
+// Chosen lesson ID (Introduction, Main, Question)
+const currentLessonId = ref('');
+
+// Update currentLessonId, when component is mounted
+onMounted(() => {
+  currentLessonId.value = selectedLesson.value;
+});
+
+// Update currentLessonId, when a new lesson is selected
+watch(selectedLesson, (newLesson) => {
+  currentLessonId.value = newLesson;
+});
+
+// Fetch slides whenever the selected lesson changes
+watchEffect(() => {
+  if (selectedLesson.value) {
+    fetchSlides(selectedLesson.value);
+  }
+});
+
+
+
+// Current course ID & object
 const course = ref({});
+const { id: courseId } = useRoute().params;
 
+// Fetch course data based on course ID
 async function fetchCourse(courseId) {
   try {
     course.value = await api.getCourseById(courseId);
@@ -159,23 +308,23 @@ async function fetchCourse(courseId) {
   }
 }
 
-const { id: courseId } = useRoute().params;
-
-
-
+// Fetch course and lessons data when component is mounted
 onMounted(async () => {
   await fetchCourse(courseId);
   await fetchLessons(courseId); 
 
+  // Auto select the first lesson (Introduction)
   if(lessons.value.length > 0) {
     selectedLesson.value = lessons.value[0]._id;
   }
 
+  // Fetch slides for all lessons
   for (const lesson of lessons.value) {
     await fetchSlides(lesson._id); 
   }  
 });
 
+// Watch slide creation & update - fetch slides and show the new created slide after slide creation
 watch([showSlideCreation, showSlideUpdate], async (newValue, oldValue) => {
   if (!newValue[0] && oldValue[0] || !newValue[1] && oldValue[1]) {
     for (const lesson of lessons.value) {
@@ -184,43 +333,30 @@ watch([showSlideCreation, showSlideUpdate], async (newValue, oldValue) => {
   }
 });
 
-watch(slideRemoved, async () => {
-  for (const lesson of lessons.value) {
-    await fetchSlides(lesson._id); 
-  }
-});
-
 
 // Slide content edit open (slideBoardComponent) logic
 const useRouterCustom = () => {
-  
   const router = useRouter();
 
   // To open a course interface and edit the content inside the course overview
-  const openSlide = (slide, index) => {
-    console.log("Sending courseId:", courseId, "Slide index:", index);
-    router.push({ name: 'SlideBoard', params: { id: slide._id, courseId: courseId, slideIndex: index } });
+  const openSlide = (slide, globalIndex) => {
+    router.push({ name: 'SlideBoard', params: { id: slide._id, courseId: courseId, globalIndex: globalIndex} });
   };
   return {
     openSlide
   }
 }
-
 const { openSlide } = useRouterCustom();
+
 
 
 const props = defineProps({
   darkMode: Boolean,
   toggleDarkMode: Function
 });
-
-
-
-/* const dropEvent = (event, projectId, columnId) => {
-  console.log("Drop event in Vue component: ", event);
-  drop(projectId, columnId, event);
-}; */
 </script>
+
+
 
 
 <style lang="scss" scoped>
@@ -256,21 +392,61 @@ main {
 
 .main-div .line {
   position: absolute !important;
-  top: 240px;
-  left: -5px;
+  top: 100px;
+  margin-left: 0 !important;
   height: 0.5px;
-  width: 94.5%;
+  width: 85vw;
 }
 
+.slide-info-container{
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.edit-div{
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 48px !important;
+  width: 8% !important;
+}
+
+.slide-info-box{
+  display: flex;
+  width: 84%;
+}
+
+.slide-info-div{
+  padding-right: 3%;
+  width: 30%;
+}
+ 
 .slide-container{
   margin-top: 20px;
   display: flex;
   justify-content: space-between;
 }
 
+.slide-information-printet{
+  display: flex;
+  width: 84%;
+}
+
+.slide-value{
+  padding-right: 3%;
+  width: 33%;
+  box-sizing: border-box;
+}
+
+.slide-description p{
+  white-space: nowrap;
+  overflow: hidden;
+  margin: 0;
+  margin-right: 30%;
+}
+
 .slide-title-div{
   display: flex;
-
 }
 
 .button-div{
@@ -288,7 +464,7 @@ main {
 }
 
 .course-title {
-  padding-bottom: 35px;
+  padding-bottom: 10px;
 }
 
 .course-title h2{
@@ -309,11 +485,15 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
 }
 
 .lesson-part{
   display: flex;
   justify-content: space-between;
+  background: #707070;
+  color: #fff;
+  margin-bottom: 20px;
 }
 
 .lesson-container{
@@ -331,7 +511,7 @@ main {
 }
 
 .lesson-header:hover{
-  background-color: #414141c2;
+  background-color: #333;
   color: #fff;
 }
 
@@ -347,6 +527,12 @@ main {
   width: 25px;
   height: auto;
   cursor: pointer;
+  position: relative;
+}
+
+.icon img:hover ~ .label {
+  opacity: 1;
+  height: 30px;
 }
 
 .icon img{
@@ -371,6 +557,16 @@ main {
 .card {
   display: flex;
   justify-content: flex-end !important;
+}
+
+.upload-PDF{
+  margin-right: 40px;
+}
+
+.upload-PDF img{
+  margin-left: 20px;
+  width: 25px;
+  height: 25px;
 }
 
 .plus {

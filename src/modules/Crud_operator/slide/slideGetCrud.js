@@ -3,7 +3,7 @@ import api from '../../../api/slideApi.js';
 
 import { 
     lessons,
-  } from '../../columns';
+  } from '../../lessons.js';
 
 /* 
 *
@@ -46,12 +46,14 @@ const slidesByCourse = ref([]);
 
 const fetchSlidesByCourse = async (courseId) => {
   try {
+    console.log(`Henter slides for kursus-ID: ${courseId}`);
     const fetchedSlides = await api.getSlidesByCourse(courseId);
-    slidesByCourse.value = fetchedSlides;
+    slidesByCourse.value = fetchedSlides || [];
+    console.log(`Hentede slides for kursus:`, fetchedSlides);
     return fetchedSlides; // Tilføjer denne linje
   } catch (error) {
     console.error('Error fetching slides by course:', error);
-    throw error;
+    slidesByCourse.value = [];
   }
 };
 

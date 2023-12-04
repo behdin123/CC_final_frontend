@@ -3,7 +3,7 @@
   
       <div class="update-catalog-popup">
   
-        <h2>Update Catalog</h2>
+        <h2>Update Catalog: <b>{{ catalog.name }}</b></h2>
   
         <div class="buttons-container">
           <button class="button" @click="toggleEditMode">{{ buttonText }}</button>
@@ -26,7 +26,7 @@
           <span v-else>{{ catalog.categories.join(', ') }}</span>
         </label>
   
-        <label class="input-label"> Private:
+        <label class="input-label"> Active:
           <input 
             v-if="editMode"
             class="checkbox"
@@ -38,10 +38,13 @@
         </label>
   
         <button v-if="editMode" class="button Update-button" @click="updateAndClose">Update Catalog</button>
-        <button v-else class="button button-color" @click="removeCatalogAndClose">Remove</button>
+        <button v-else class="button button-color" @click="showAlert">Delete</button>
   
         <!-- Close button -->
         <button class="close" @click="$emit('update-finished')">x</button>
+
+    <!-- slide Delete popup -->
+    <alert-component ref="alertBox" title="Confirm Delete" message="Are you sure to delete this catalog?" @confirm="confirmDelete"/>
   
       </div>
   
@@ -63,10 +66,23 @@
   } from '../../modules/Main_logic/Home';
   
   import { removeCatalog } from '../../modules/Crud_operator/catalog/catalogRemoveCrud';
+  import AlertComponent from '../user/AlertComponent.vue';
   
   const props = defineProps({
     catalog: Object,
   });
+
+  // Course remove logic - to make sure that the user wants to delete it or not
+  const alertBox = ref(null);
+
+  const showAlert = () => {
+    alertBox.value.show();
+  };
+
+  const confirmDelete = async () => {
+    await removeCatalog(props.catalog._id);
+    onUpdateFinished();
+  };
   
   watchEffect(() => {
     const newCatalog = props.catalog;
@@ -76,6 +92,7 @@
     }
   });
   
+
   const updateSuccess = ref(false);
   
   const updateAndClose = async () => {
@@ -88,10 +105,10 @@
     }
   });
   
-  const removeCatalogAndClose = async () => {
+/*   const removeCatalogAndClose = async () => {
     await removeCatalog(props.catalog._id);
     onUpdateFinished();
-  };
+  }; */
   
   const editMode = ref(false);
   const buttonText = ref('Switch to Edit Mode');
@@ -126,10 +143,21 @@
     flex-direction: column;
     align-items: center;
     position: relative;
-    color: var(--tertiary-color);
-    width: 45%;
+    color: var(--white-black-color);
+    width: 30%;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
-    border-radius: 8px;
+}
+
+span{
+  font-weight: bold;
+}
+
+.update-catalog-popup h2{
+  font-weight: lighter;
+}
+
+.update-catalog-popup h2 b{
+  font-weight: bold;
 }
 
 .catalog-description{
@@ -159,6 +187,14 @@
 
 .button-color{
   background-color: #E53935;
+}
+
+@media screen and (max-width: 2000px) {
+
+.update-catalog-popup {
+  width: 45%;
+}
+
 }
 
 </style>

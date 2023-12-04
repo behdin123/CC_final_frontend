@@ -89,20 +89,20 @@ const cancelCrop = () => {
 // Handle the course creation and sends the request the the API call (courseApi.js)
 const createCourse = async (catalogID) => {
     newCourse.value.tags = tagsInput.value.split(',').map(tag => tag.trim());
-
+  
     const formData = new FormData();
-    formData.append('image', newCourse.value.image, 'course_image.jpg');
     formData.append('title', newCourse.value.title);
     formData.append('description', newCourse.value.description);
+    formData.append('image', newCourse.value.image, 'course_image.jpg');
     formData.append('private', newCourse.value.private);
     formData.append('tags', JSON.stringify(newCourse.value.tags));
-
+  
     try {
-        await api.createCourse(catalogID, formData);
-        return true;
+      await api.createCourse(catalogID, formData);
+      return true;
     } catch (error) {
-        console.error('Error creating course:', error);
-        return false;
+      console.error('Error creating course:', error);
+      return false;
     }
 };
 

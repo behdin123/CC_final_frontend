@@ -22,8 +22,16 @@
                 <input type="text" v-model="newCourse.description" />
             </label>
 
-            <label class="input-label"> Tags:
-                <input type="text" v-model="tagsInput" placeholder="Enter tags separated by commas" />
+            <label class="input-label course"> 
+                <div class="course-tag-div">
+                    Tags:
+                    <img src="@/assets/WebNote.png" alt="">
+                    <div class="label">
+                        <p>Enter Tags with "comma" </p>
+                        <p>Example: one, two, three</p>
+                    </div>
+                </div>
+                <input type="text" v-model="tagsInput" placeholder="tag1, tag2" />
             </label>
 
             <label class="input-label"> Private:
@@ -88,6 +96,7 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 
 const handleCreateCourse = async () => {
+  console.log("Tags før oprettelse:", tagsInput.value);
   const isSuccess = await createCourse(selectedCatalogID.value);
   if (isSuccess) {
     emit('close');  
@@ -120,7 +129,7 @@ const handleCreateCourse = async () => {
     flex-direction: column;
     align-items: center;
     position: relative;
-    width: 37%;
+    width: 30%;
     box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
 }
 
@@ -136,6 +145,7 @@ const handleCreateCourse = async () => {
     justify-content: space-between;
     color: var(--white-black-color);
     margin: 10px;
+    align-items: center;
 }
 
 .extra-margin{
@@ -143,7 +153,7 @@ const handleCreateCourse = async () => {
 }
 
 .button {
-    background-color: var(--quaternary-color);
+    background-color: var(--main-button);
     border: none;
     color: #fff;
     cursor: pointer;
@@ -178,5 +188,47 @@ const handleCreateCourse = async () => {
 .image-label{
   display: flex;
   align-items: center;
+}
+
+.course-tag-div img{
+    width: auto;
+    height: 20px;
+    margin-left: 10px;
+    z-index: 100;
+    cursor: pointer;
+}
+
+.course-tag-div{
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+
+.course-tag-div .label{
+    width: 250px;
+    flex-direction: column;
+    text-align: left;
+    align-items: flex-start !important;
+}
+
+
+.course-tag-div img:hover ~ .label {
+    opacity: 1;
+    height: 95px;
+}
+
+.course-tag-div .label p{
+    margin: 0;
+    padding-left: 10px;
+    padding-bottom: 10px;
+}
+
+@media screen and (max-width: 2000px) {
+
+.create-course-popup {
+  width: 45%;
+}
+
 }
 </style>

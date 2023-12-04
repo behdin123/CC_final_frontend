@@ -1,9 +1,8 @@
 
-import { removeSlide } from '../../modules/Crud_operator/slide/slideRemoveCrud.js';
 import { ref } from 'vue';
 import { 
     selectedLesson,
-} from '../../modules/columns';
+} from '../../modules/lessons';
 
 // Select Lesson (ID)
 const selectLesson = (lessonId) => {
@@ -38,15 +37,17 @@ const closeSlideUpdate = () => {
 };
 
 
-//slide remove logic
-const slideRemoved = ref(false);
+// slide PDF popup
 
+const showSlidePdf = ref(null);
 
-const removeSlideAndClose = async (slideId) => {
-    await removeSlide(slideId);
-    slideRemoved.value = !slideRemoved.value;
+const showPdfUpload = () => {
+  showSlidePdf.value = true;
 };
 
+const closeSlidePdf = () => {
+  showSlidePdf.value = false;
+};
 
   
 
@@ -64,6 +65,9 @@ export{
     showSlideUpdate,
     openSlideUpdate,
     closeSlideUpdate,
-    slideRemoved,
-    removeSlideAndClose,
+
+    // slide PDF popup
+    showSlidePdf,
+    showPdfUpload,
+    closeSlidePdf,
 };

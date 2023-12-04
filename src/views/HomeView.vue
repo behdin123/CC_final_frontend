@@ -56,52 +56,68 @@
                   <div class="catalog-title first-catalog-title">
                       <div class="edit" @click="openCatalogUpdatePopup(catalog)">
                         <img src="@/assets/pencil.png" alt="">
+                        <div class="label">
+                          <p>Edit catalog</p>
+                        </div>
                       </div>
-                      <p>{{ capitalizedCatalogName(catalog) }}</p>
+                      <p :class="getClassForCatalog(catalog)">{{ capitalizedCatalogName(catalog) }}</p>
                   </div>
-                  <div class="catalog-title">
+                  <div class="catalog-title" :class="getClassForCatalog(catalog)">
                     <p>{{ catalog.categories.join(', ') }}</p>
                   </div>
-                  <div class="catalog-title">
+                  <div class="catalog-title" :class="getClassForCatalog(catalog)">
                     <p>{{ catalog.description }}</p>
                   </div>
-                  <div class="catalog-title">
+                  <div class="catalog-title" :class="getClassForCatalog(catalog)">
                     <p>{{ new Date(catalog.updatedAt).toLocaleDateString() }}</p>
                   </div>
+
                   <div class="catalog-title last-catalog-title">
                     <div :class="['circle', catalog.status ? 'circle-active' : 'circle-inactive']"></div>
-                    <p>{{ catalog.status ? 'Active' : 'Inactive' }}</p>
-                    <div class="open-catalog-div" @click="toggleCatalog(catalog._id)">
+                    <p  :class="getClassForCatalog(catalog)">{{ catalog.status ? 'Active' : 'Inactive' }}</p>
+                  </div>
+
+                    <div class="open-catalog-div edit" @click="toggleCatalog(catalog._id)">
                       <img v-if="!darkMode" src="@/assets/down-chevron.png">
                       <img v-else src="@/assets/down-chevron-white.png" />
+                      <div class="label">
+                          <p>Open catalog</p>
+                      </div>
                     </div>
-                  </div>
-                </div>
+               </div>
 
                 <div class="course-container" :class="{ 'course-container': true, 'course-container-open': openCatalogs.includes(catalog._id) }">
 
-                    <div class="course-div" v-for="course in catalog.courses" :key="course._id">
+                    <div class="course-div" v-for="course in catalog.courses" :key="course._id" :class="getClassForCatalog(catalog)">
                       <div class="dark-overlay"></div>
                       <div class="course-image-div">
                         <img :src="course.image" @error="imageError"/>
                       </div>
 
-                      <div class="course-title">
+                      <div class="course-title" :class="getClassForCatalog(catalog)">
                         <p>{{ capitalizedCourseTitle(course) }}</p>
                       </div>
 
-                      <div @click=" openCourse(course);" class="open-course-btn">
+                      <div @click=" openCourse(course);" class="open-course-btn" >
                         <button>Open course</button>
                       </div>
 
-                      <div @click=" openCourseUpdatePopup(course);" class="edit-course">
+                      <div @click=" openCourseUpdatePopup(course);" class="edit-course" :class="getClassForCatalog(catalog)">
                         <img src="@/assets/pencil.png">
+                      </div>
+
+                      <div class="private-course" :class="getClassForCourse(course)">
+                        <img src="@/assets/lockIcon.png">
                       </div>
                     </div>
                     
+                    <div class="icon">
                       <img @click=" openCourseCreation(catalog._id);" v-if="!darkMode" class="add-new-course" src="@/assets/add.png" />
                       <img @click=" openCourseCreation(catalog._id);" v-else class="add-new-course" src="@/assets/add-dark.png" />
-
+                      <div class="label">
+                          <p>Create course</p>
+                      </div>
+                    </div>
                 </div>
 
             </div>
@@ -157,21 +173,18 @@
 <script setup>
 
 import { useRouter } from 'vue-router';
-
 import { ref, defineProps, watch, onMounted } from 'vue';
 
 import { capitalizedUsername } from '../modules/Main_logic/UserProfile';
-
-import courseCreateComponent from '../components/course/courseCreateComponent.vue';
-
-import catalogCreateComponent from '../components/catalog/catalogCreateComponent.vue';
 
 import { fetchCourses } from '../modules/Crud_operator/Course/courseGetCrud'; 
 
 import { catalogs, fetchCatalogs } from '../modules/Crud_operator/catalog/catalogGetCrud';
 
+// Catalog & Course popup component import 
+import courseCreateComponent from '../components/course/courseCreateComponent.vue';
+import catalogCreateComponent from '../components/catalog/catalogCreateComponent.vue';
 import courseUpdateComponent from '../components/course/courseUpdateComponent.vue';
-
 import catalogUpdateComponent from '../components/catalog/catalogUpdateComponent.vue';
 
 import {
@@ -205,8 +218,6 @@ import {
     capitalizedCourseTitle,
 
 } from '../modules/Main_logic/Home';
-
-
 
 
 
@@ -277,6 +288,14 @@ const props = defineProps({
   toggleDarkMode: Function
 });
 
+const getClassForCatalog = (catalog) => {
+  return catalog.status ? 'active-catalog-class' : 'inactive-catalog-class';
+};
+
+const getClassForCourse = (course) => {
+  return course.private ? 'private-course-class' : 'not-private-course-class';
+};
+
 </script>
 
 
@@ -284,6 +303,34 @@ const props = defineProps({
 <style lang="scss" scoped>
 
 @import "@/assets/global.scss";
+
+.last-catalog-title{
+  width: 10% !important;
+  padding-right: 0 !important;
+}
+
+.inactive-catalog-class{
+  opacity: 0.5 !important;
+}
+
+.edit img:hover ~ .label {
+  opacity: 1;
+  height: 30px;
+}
+
+.icon img:hover ~ .label {
+  opacity: 1;
+  height: 30px;
+}
+
+.icon .label{
+  margin-left: 40px;
+  margin-bottom: 275px;
+}
+
+.icon{
+  position: relative;
+}
 
 body {
   margin: 0;
@@ -454,6 +501,11 @@ main {
   cursor: pointer;
 }
 
+.edit-course img{
+  width: 100%;
+  height: auto;
+}
+
 .course-div:hover .edit-course{
   opacity: 1;
 }
@@ -462,10 +514,26 @@ main {
   opacity: 1;
 }
 
-.edit-course img{
+.private-course{
+  z-index: 2;
+  width: 25px;
+  height: auto;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  transition: opacity 0.5s ease-in;
+  cursor: pointer;
+}
+
+.not-private-course-class{
+  opacity: 0 !important;
+}
+
+.private-course img{
   width: 100%;
   height: auto;
 }
+
 
 .catalogs-columns{
   display: flex;
@@ -478,6 +546,7 @@ main {
 }
 
 .edit{
+  position: relative;
   margin-right: 15px;
   width: 25px;
   height: auto;
@@ -499,6 +568,8 @@ main {
 .open-catalog-div{
   width: 25px;
   height: auto;
+  align-items: center;
+  display: flex;
 }
 
 .open-catalog-div :hover{
@@ -572,8 +643,8 @@ main {
 }
 
 .circle{
-  height: 10px;
-  width: 10px;
+  min-height: 10px;
+  min-width: 10px;
   border-radius: 50%;
   margin-right: 20px;
 }

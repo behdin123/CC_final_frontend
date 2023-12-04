@@ -1,15 +1,15 @@
 <template>
   <header>
-    <img v-if="!darkMode" class="logo" src="@/assets/VIKING-Safety-Academy.png" />
-    <img v-else class="logo" src="@/assets/VIKING-Safety-Academy-white.png" />
+    <img v-if="!darkMode" @click="goToHome" class="logo" src="@/assets/VIKING-Safety-Academy.png" />
+    <img v-else @click="goToHome" class="logo" src="@/assets/VIKING-Safety-Academy-white.png" />
     <div class="wrapper">
       <!-- Navigation -->
       <nav>
 
-        <div class="nav-links">
+        <!-- <div class="nav-links">
           <RouterLink to="/">Frontpage</RouterLink>
           <RouterLink v-if="isLoggedIn" to="/Home">Home</RouterLink>
-        </div>
+        </div> -->
 
         <!-- login & register & logout -->
         <div class="login-div" v-bind:class="{ 'login-div-loggedin': isLoggedIn }">
@@ -38,7 +38,6 @@
 
 <script setup>
 import { ref, defineProps, watch} from 'vue';
-import { RouterLink } from 'vue-router';
 import LoginComponent from '../user/loginComponent.vue';
 import UserProfileComponent from '../user/userProfileComponent.vue';
 import { useRouter } from 'vue-router';
@@ -48,6 +47,7 @@ import { isLoggedIn } from '../../modules/Crud_operator/User/login.js';
 import { capitalizedUsername, showPopup, imageError } from '../../modules/Main_logic/UserProfile';
 
 import { profile_image } from '../../modules/Crud_operator/User/userGetCrud'
+
 
 const components = {
   LoginComponent,
@@ -65,11 +65,22 @@ const props = defineProps({
 
 const router = useRouter();
 
+// Navigation control to go back to course overview from the slide preview
+const goToHome = () => {
+    router.push({ name: 'Home'}); 
+};
+
 //checking if the user is logged out then it should be send back to the frontpage
 watch(isLoggedIn, (newIsLoggedIn) => {
   if (!newIsLoggedIn) {
     router.push('/');
   }
+});
+
+watch(isLoggedIn, (newIsLoggedIn) => {
+    if (newIsLoggedIn) {
+      router.push('/Home');
+    }
 });
 
 </script>
@@ -187,7 +198,7 @@ a:link {
   display: flex;
   align-items: center;
   cursor: pointer;
-  margin-right: 90px;
+  margin-right: 5%;
   transition: opacity 0.3s;
 }
  
@@ -244,6 +255,7 @@ a:hover::before {
   width: auto;
   height: 50px;
   padding: 5px 0;
+  cursor: pointer;
 }
 
 .wrapper {

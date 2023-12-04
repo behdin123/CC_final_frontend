@@ -39,30 +39,12 @@ const dragLeave = (event) => {
     hoveredColumn.value = null;
 };
 
-/* const columns = ref([]);
-
-async function fetchColumns(projectId) {
-    
-    console.log('fetchColumns: Before fetching columns');
-
-    try {
-      columns.value = await api.getColumnsByProject(projectId);
-      console.log('fetchColumns: After fetching columns:', columns.value);
-
-    } catch (error) {
-      console.error("Error fetching columns:", error);
-    }
-} */
-
 const lessons = ref([]);
 
 async function fetchLessons(courseId) {
-    
-    console.log('fetchLessons: Before fetching lessons');
 
     try {
         lessons.value = await api.getLessonsByCourseId(courseId);
-      console.log('fetchLessons: After fetching lessons:', lessons.value);
 
     } catch (error) {
       console.error("Error fetching lessons:", error);
@@ -70,25 +52,13 @@ async function fetchLessons(courseId) {
 }
 
 const selectedLesson = ref('');
-
-
-
-
   
-
   const drop = async (projectId, columnId, event) => {
     if (event) {
         event.preventDefault();
         const data = JSON.parse(event.dataTransfer.getData("text/plain"));
         const { cardId, columnId: fromColumnId } = data;
-
-        /* console.log("cardId:", cardId);
-        console.log("projectId:", projectId);
-        console.log("columnId:", columnId);
-        console.log("fromColumnId:", fromColumnId); */
         
-
-       
         // Update the task's column on your backend
         await taskApi.updateTaskColumn(cardId, projectId, columnId);
 

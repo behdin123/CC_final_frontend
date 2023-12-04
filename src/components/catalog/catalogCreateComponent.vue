@@ -12,10 +12,20 @@
         <label class="input-label"> Description:
           <input type="text" v-model="newCatalog.description" />
         </label>
-        <label class="input-label"> Categories:
-          <input type="text" v-model="categoriesInput" placeholder="Enter categories separated by commas" />
+
+        <label class="input-label Categories"> 
+          <div class="Categories-div">
+            Categories:
+            <img src="@/assets/WebNote.png" alt="">
+            <div class="label">
+                <p>Enter categories with "comma" </p>
+                <p>Example: one, two, three</p>
+             </div>
+          </div>
+          <input type="text" v-model="categoriesInput" placeholder="categori1, categori2" />
         </label>
-        <label class="input-label"> Status:
+
+        <label class="input-label"> Active:
           <input class="checkbox" type="checkbox" v-model="statusInput" />
         </label>
         <button class="button Update-button" @click="handleCreateCatalog">Create Catalog</button>
@@ -61,7 +71,7 @@
 
   </script>
   
-  <style lang="scss">
+  <style lang="scss" scoped>
   @import "@/assets/global.scss";
   
   .create-catalog-container {
@@ -98,12 +108,13 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     color: var(--white-black-color);
     margin: 10px;
   }
   
   .button {
-    background-color: var(--quaternary-color);
+    background-color: var(--main-button);
     border: none;
     color: #fff;
     cursor: pointer;
@@ -117,5 +128,39 @@
     background-color: var(--primary-hover-color);
     color: #000;
   }
+
+  .Categories img{
+    width: auto;
+    height: 20px;
+    margin-left: 10px;
+    z-index: 100;
+    cursor: pointer;
+  }
+
+  .Categories-div{
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  .Categories-div img:hover ~ .label {
+    opacity: 1;
+    height: 95px;
+  }
+
+  .Categories-div .label{
+    width: 250px;
+    flex-direction: column;
+    text-align: left;
+    align-items: flex-start !important;
+  }
+
+  .Categories-div .label p{
+    margin: 0;
+    padding-left: 10px;
+    padding-bottom: 10px;
+  }
+
+
   </style>
   

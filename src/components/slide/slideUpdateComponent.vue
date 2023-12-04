@@ -13,12 +13,12 @@
 
         <label class="input-label"> Title:
           <input v-if="editMode" type="text" v-model="updatedSlide.title" />
-          <span v-else> {{ slide.title }} </span>
+          <span v-else> <b>{{ slide.title }}</b> </span>
         </label>
 
         <label class="input-label"> Description:
           <input v-if="editMode" type="text" v-model="updatedSlide.description" />
-          <span v-else> {{ slide.description }} </span>
+          <span v-else> <b>{{ slide.description }}</b> </span>
         </label>
 
         <!-- Add other slide properties similarly, as required -->
@@ -37,8 +37,8 @@
 import { ref, computed, defineProps, defineEmits, onMounted } from 'vue';
 
 import { fetchSlides } from '../../modules/Crud_operator/slide/slideGetCrud';
-import { lessons } from '../../modules/columns';
-import { handleUpdateSlide } from '../../modules/Crud_operator/slide/slideUpdateCrud';
+import { lessons } from '../../modules/lessons';
+import { handleUpdateSlide, setUpdatedSlide } from '../../modules/Crud_operator/slide/slideUpdateCrud';
 
 const props = defineProps({
   showSlideUpdate: Boolean,
@@ -55,6 +55,9 @@ const toggleEditMode = () => {
 };
 
 const updateAndClose = async () => {
+  console.log('Original Slide:', props.slide);
+  console.log('Updated Slide Before Update:', updatedSlide.value);
+  setUpdatedSlide(updatedSlide.value);
   updateSuccess.value = await handleUpdateSlide(updatedSlide.value);
   emit('close');
 };
@@ -62,7 +65,8 @@ const updateAndClose = async () => {
 onMounted(async () => {
   for (const lesson of lessons.value) {
     await fetchSlides(lesson._id); 
-  }  
+  }
+  console.log('Props Slide After Mounted:', props.slide);
 });
 
 const emit = defineEmits(['close']);
@@ -92,7 +96,7 @@ const buttonText = computed(() => (editMode.value ? 'Cancel Edit' : 'Edit Slide'
     flex-direction: column;
     align-items: center;
     position: relative;
-    color: var(--tertiary-color);
+    color: var(--white-black-color);
     width: 30vw;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
   }

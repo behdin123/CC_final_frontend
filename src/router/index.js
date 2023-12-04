@@ -30,7 +30,7 @@ const router = createRouter({
       },
     },
     {
-      path: '/slide/:id/:courseId/:slideIndex',
+      path: '/slide/:id/:courseId/:globalIndex',
       name: 'SlideBoard',
       component: SlideBoardComponent,
       props: true,

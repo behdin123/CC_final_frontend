@@ -72,9 +72,9 @@
 
             </div>
         </div>
-
     </div>
 </template>
+
 
 <script setup>
 import { ref, onUnmounted, computed } from 'vue';
@@ -267,8 +267,8 @@ const updateAndClose = async () => {
   align-items: center;
   width: 30%;
   position: relative;
-  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
-  border-radius: 8px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  height: 45%;
 }
 
 
@@ -366,7 +366,7 @@ img {
 }
 
 .button {
-  background-color: var(--quaternary-color);
+  background-color: var(--main-button);
   border: none;
   color: #fff;
   cursor: pointer;

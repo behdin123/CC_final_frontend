@@ -17,10 +17,6 @@
 
 }
 
-.Update-button{
-    background-color: #8BC34A !important;
-}
-
 
 .close{
   background-color: transparent;
@@ -124,8 +120,8 @@
 
 .plus-icon {
   display: inline-block;
-  width: 20px; 
-  height: 20px; 
+  width: 25px; 
+  height: 25px; 
   background-image: url('@/assets/plus.png');
   background-size: contain;
   background-repeat: no-repeat;
@@ -247,6 +243,28 @@
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
+}
+
+.label{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 10;
+  position: absolute;
+  border-radius: 5px;
+  bottom: 20px;
+  background: #333;
+  width: 150px;
+  color: white;
+  opacity: 0;
+  height: 0px;
+  transition: opacity 0.2s ease-in-out, height 0.1s ease-in-out; 
+}
+
+.label{
+  margin-left: -65px;
+  margin-bottom: 20px;
 }
 
 

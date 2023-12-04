@@ -11,7 +11,7 @@
 
       <div class="update-course-popup">
 
-        <h2>Update Course: {{ course.title }}</h2>
+        <h2>Update Course: <b> {{ course.title }}</b></h2>
 
         <div class="buttons-container">
             <button class="button" @click="toggleEditMode">{{ buttonText }}</button>
@@ -30,7 +30,7 @@
           </label>
   
           <label class="input-label"> Tags:
-            <input v-if="editMode" type="text" v-model="updatedCourse.tagsInput" placeholder="Enter tags separated by commas" />
+            <input v-if="editMode" type="text" v-model="tagsInput" placeholder="Enter tags separated by commas" />
             <span v-else>{{ course.tags.join(', ') }}</span>
           </label>
   
@@ -68,12 +68,15 @@
           </label>
           
           <button v-if="editMode" class="button Update-button" @click="updateAndClose">Update Course</button>
-          <button v-else class="button button-color" @click="removeCourseAndClose">Remove</button>
+          <button v-else class="button button-color" @click="showAlert">Delete</button>
   
         <!-- Close button -->
         <button class="close" @click="$emit('close')">x</button>
 
       </div>
+
+    <!-- slide Delete popup -->
+    <alert-component ref="alertBox" title="Confirm Delete" message="Are you sure to delete this course?" @confirm="confirmDelete"/>
 
     </div>
   </template>
@@ -81,7 +84,7 @@
 
 
 <script setup>
-import { ref, watchEffect, defineProps } from 'vue';
+import { ref, watch, watchEffect, defineProps } from 'vue';
 
 import {
   onFileChange,
@@ -104,16 +107,35 @@ import {
 } from '../../modules/Main_logic/Home';
 
 import { removeCourse } from '../../modules/Crud_operator/Course/courseRemoveCrud';
+import AlertComponent from '../user/AlertComponent.vue';
 
-
+// Define the course object (we need the ID) to be able to update or delete the ocurse
 const props = defineProps({
   course: Object,
 });
 
+
+// Course remove logic - to make sure that the user wants to delete it or not
+const alertBox = ref(null);
+
+const showAlert = () => {
+  alertBox.value.show();
+};
+
+const confirmDelete = async () => {
+  await removeCourse(props.course._id);
+  onUpdateFinishedCourse();
+};
+
+
+// watch if the course have been updated then show the new values
 watchEffect(() => {
   const newCourse = props.course;
+  
+  console.log("Course tags:", newCourse.tags);
   console.log("Course received in openCourseUpdatePopup:", newCourse);
-  if (newCourse) {
+
+  if (newCourse && newCourse.tags) {
     Object.assign(updatedCourse.value, newCourse);
     tagsInput.value = newCourse.tags.join(', ');
   }
@@ -133,13 +155,6 @@ watchEffect(() => {
     }
 });
 
-// removeCourseAndClose and update the course lists
-const removeCourseAndClose = async () => {
-  await removeCourse(props.course._id);
-  onUpdateFinishedCourse();
-};
-
-
 // Switch between edit mode and shwo information mode
 const editMode = ref(false);
 const buttonText = ref('Switch to Edit Mode');
@@ -155,7 +170,9 @@ const toggleEditMode = () => {
 
 
 <style lang="scss" scoped>
+
 @import "@/assets/global.scss";
+
 .update-course-container {
     position: fixed;
     top: 0;
@@ -176,9 +193,21 @@ const toggleEditMode = () => {
     flex-direction: column;
     align-items: center;
     position: relative;
-    color: var(--tertiary-color);
-    width: 45%;
+    color: var(--white-black-color);
+    width: 30%;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+}
+
+span{
+  font-weight: bold;
+}
+
+.update-course-popup h2{
+  font-weight: lighter;
+}
+
+.update-course-popup h2 b{
+  font-weight: bold;
 }
 
 .course-description{
@@ -211,6 +240,14 @@ const toggleEditMode = () => {
 
 .button-color{
   background-color: #E53935;
+}
+
+@media screen and (max-width: 2000px) {
+
+  .update-course-popup {
+    width: 45%;
+  }
+
 }
 
 </style>

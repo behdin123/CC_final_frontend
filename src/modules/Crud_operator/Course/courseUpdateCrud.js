@@ -5,17 +5,6 @@
   import 'cropperjs/dist/cropper.css';
 
   const { updateCourse, updateCourseImage } = api;
-
-  const updatedCourse = ref({
-    _id: '',
-    title: '',
-    description: '',
-    private: false,
-    tags: [],
-    catalog: '',
-  });
-
-  const tagsInput = ref('');
   
   let selectedImage = ref(null);
   let showCropper = ref(false);
@@ -45,8 +34,6 @@ const onFileChange = (e) => {
 
   imageSource.value.src = URL.createObjectURL(file);
 };
-
-
 
 // For showing the croppedImage to the user before updating the course
 let croppedImage = ref(null);
@@ -87,17 +74,29 @@ const cancelCrop = () => {
 
 
 
+const updatedCourse = ref({
+  _id: '',
+  title: '',
+  description: '',
+  private: false,
+  tags: [],
+  catalog: '',
+});
+
+const tagsInput = ref('');
+
 // If pressing update button, then the updated values is send (api call) to (courseApi.js)
 const handleUpdateCourse = async () => {
   try {
+    console.log("Tags før opdatering:", tagsInput.value.split(',').map(tag => tag.trim()));
     updatedCourse.value.tags = tagsInput.value.split(',').map((tag) => tag.trim());
     
     await api.updateCourse(updatedCourse.value._id, updatedCourse.value);
 
-    // Hvis der er et beskåret billede, send det til backenden
-    if (updatedCourse.value.image) {
+    // If their is a cropped image, send it to Backend
+    if (croppedImage.value) {
       const formData = new FormData();
-      formData.append('image', updatedCourse.value.image, 'course_image.jpg');
+      formData.append('image', croppedImage.value, 'course_image.jpg');
       await api.updateCourseImage(updatedCourse.value._id, formData);
     }
 
