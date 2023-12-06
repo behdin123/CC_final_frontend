@@ -44,7 +44,7 @@
         <button class="close" @click="$emit('update-finished')">x</button>
 
     <!-- slide Delete popup -->
-    <alert-component ref="alertBox" title="Confirm Delete" message="Are you sure to delete this catalog?" @confirm="confirmDelete"/>
+    <alert-component ref="alertBox" title="Confirm Delete" message="This action cannot be undone and the File will be deleted permanently." @confirm="confirmDelete"/>
   
       </div>
   

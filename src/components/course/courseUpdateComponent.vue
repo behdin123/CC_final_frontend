@@ -76,7 +76,7 @@
       </div>
 
     <!-- slide Delete popup -->
-    <alert-component ref="alertBox" title="Confirm Delete" message="Are you sure to delete this course?" @confirm="confirmDelete"/>
+    <alert-component ref="alertBox" title="Confirm Delete" message="This action cannot be undone and the File will be deleted permanently." @confirm="confirmDelete"/>
 
     </div>
   </template>

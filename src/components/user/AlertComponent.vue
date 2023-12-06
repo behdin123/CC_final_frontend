@@ -65,7 +65,7 @@ defineExpose({ show, hide });
 .alert-box {
   background-color: var(--primary-color);
   padding: 4rem;
-  width: 20%;
+  width: 21%;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
   text-align: center;
   display: flex;
