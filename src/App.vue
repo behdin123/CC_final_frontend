@@ -53,10 +53,7 @@ const toggleDarkMode = () => {
 .dark-theme {
   --primary-color: #1d1d1d ;
   --secondary-color: #171C22;
-  --quaternary-color: #3563FF;
-  --quaternary-hover-color: #2649ba;
   --primary-hover-color: #97CBD0;
-  --background-color: #212121;
   --white-black-color: #ffffff;
   
   --succes: #2B8852;
