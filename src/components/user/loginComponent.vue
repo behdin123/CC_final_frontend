@@ -66,6 +66,7 @@
 
     </div>
   </div>
+
 </template>
 
 
@@ -111,7 +112,15 @@ let makeRouterWork = () => {
 .login-entry-div {
   display: flex;
   align-items: center;
-  color: var(--tertiary-color);
+  color: var(--white-black-color);
+}
+
+.close-popup{
+  position: absolute;
+  right: 0;
+  top: 25px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .entry a{
@@ -119,7 +128,7 @@ let makeRouterWork = () => {
 }
 
 .color{
-  color: var(--tertiary-color);
+  color: var(--white-black-color);
 }
 
 .message{
@@ -129,12 +138,13 @@ let makeRouterWork = () => {
 
 .separator {
   height: 20px;
-  border-left: 2px solid var(--tertiary-color);
+  border-left: 2px solid var(--main-button);
   margin: 10px 0;
 }
 
 .popup-container {
   display: flex;
+  align-items: center;
   position: fixed;
   top: 0;
   left: 0;
@@ -144,25 +154,26 @@ let makeRouterWork = () => {
   z-index: 100;
 }
 
-.open-popup{
-  cursor: pointer !important;
-}
-
 .popup {
   position: relative;
   margin: 6% auto;
-  padding: 20px;
+  padding: 40px;
   background-color: var(--primary-color);
   width: 80%;
+  height: 50vh;
   max-width: 500px;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+}
+
+.open-popup{
+  cursor: pointer !important;
 }
 
 .popup h2 {
   margin-top: 0;
   font-size: 24px;
   font-weight: bold;
-  color: var(--tertiary-color);
+  color: var(--white-black-color);
 }
 
 .popup input[type="text"],
@@ -172,14 +183,14 @@ let makeRouterWork = () => {
   display: block;
   width: 100%;
   margin-bottom: 20px;
-  padding: 15px;
+  padding: 2vh 15px;
   border: 1px solid #ccc;
   font-size: 16px;
   box-sizing: border-box;
   font-family: 'Roboto', sans-serif;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.2), -2px -2px 5px rgba(255,255,255,0.5);
-  
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
 }
+
 
 .popup input[type="text"]:focus,
 .popup input[type="email"]:focus,
@@ -192,16 +203,19 @@ let makeRouterWork = () => {
   background-color: var(--main-button);
   border: none;
   color: white;
+  text-transform: uppercase;
   margin-top: 40px;
-  padding: 1.5vh 15px;
-  font-size: 24px;
+  padding: 2vh 15px;
+  font-size: 26px;
   text-align: center;
+  font-weight: 700;
   transition: background-color 0.2s ease-in-out;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.568), -2px -2px 5px rgba(255, 255, 255, 0.728);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.568);
+  cursor: pointer;
 }
 
 .popup button:hover{
-  background-color: var(--main-button);
+  background-color: var(--primary-hover-color) !important;
 }
 
 

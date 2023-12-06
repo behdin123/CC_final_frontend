@@ -113,7 +113,7 @@ const handleLogin = async () => {
 
 .Login-div {
     height: 55vh;
-    width: 30vw;
+    width: 27vw;
     padding: 65px 6%;
     background-color: var(--second-background);
     color: var(--white-black-color);

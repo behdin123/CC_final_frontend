@@ -224,13 +224,13 @@ a:link {
 
 header a {
   position: relative;
-  color: var(--tertiary-color);
+  color: var(--white-black-color);
   text-decoration: none;
 
 }
 
 a:hover {
-  color: var(--tertiary-color);
+  opacity: 0.6;
 }
 
 a::before {
@@ -240,7 +240,7 @@ a::before {
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: var(--tertiary-color);
+  color: var(--white-black-color);
   transform: scaleX(0);
   transition: transform 0.2s ease-in-out;
 }

@@ -31,7 +31,7 @@ const props = defineProps({
 
 footer {
     background-color: var(--primary-color);
-    color: var(--tertiary-color);
+    color: var(--white-black-color);
     border-top: 1px solid var(--primary-color);
     font-size: 14px;
     min-height: 58px;
