@@ -8,7 +8,7 @@ register: async (data) => {
     try {
         
       console.log("Request body:", data);
-      const response = await axios.post(`http://localhost:3000/auth/register`, data);  
+      const response = await axios.post(`https://cc-final-backend.onrender.com/auth/register`, data);  
      
       return response;
 
@@ -22,7 +22,7 @@ register: async (data) => {
     try {
         
       console.log("Request body:", data);
-      const response = await axios.post(`http://localhost:3000/auth/login`, data, { withCredentials: true });
+      const response = await axios.post(`https://cc-final-backend.onrender.com/auth/login`, data, { withCredentials: true });
      
       return response;
     } catch (error) {
