@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 export default {
+  
   // Create Catalog
   createCatalog: async (data) => {
     try {

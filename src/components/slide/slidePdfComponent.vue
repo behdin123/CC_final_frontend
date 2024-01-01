@@ -22,7 +22,7 @@
 import { ref, defineEmits, defineProps } from 'vue';
 import { uploadPdf } from "../../modules/Crud_operator/slide/slideCreateCrud";
 
-import { lessons, fetchLessons, selectedLesson } from '../../modules/lessons';
+import { lessons, fetchLessons, selectedLesson } from '../../modules/Crud_operator/Course/lessons';
 import { UpdateAllSlideOrder } from '../../modules/Crud_operator/slide/slideCreateCrud';
 import { fetchSlides, slidesByCourse, fetchSlidesByCourse } from '../../modules/Crud_operator/slide/slideGetCrud';
 

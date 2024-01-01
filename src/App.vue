@@ -3,9 +3,10 @@
     <!-- Header section -->
     <navigation-component :toggle-dark-mode="toggleDarkMode" :darkMode="darkMode" v-if="!$route.meta.hideComponent"/>
 
-    <!-- page view -->
+    <!-- Page view -->
     <RouterView :toggle-dark-mode="toggleDarkMode" :darkMode="darkMode"/>
 
+    <!-- Footer section -->
     <footer-component :toggle-dark-mode="toggleDarkMode" :darkMode="darkMode" v-if="!$route.meta.hideComponent"/>
   </div>
 </template>
@@ -17,12 +18,12 @@ import Cookies from 'js-cookie';
 import { RouterView } from 'vue-router'
 import { isLoggedIn } from './modules/Crud_operator/User/login.js';
 
-
 // Importing navigation & footer from components
 import footerComponent from './components/partials/footerComponent.vue';
 import navigationComponent from './components/partials/navigationComponent.vue';
 
 import { ref, watchEffect, onMounted } from 'vue';
+
 
 // chekcing if their is a token saved as a coockie, and if so it means that the user is logged in and theirfor the isLoggedIn value will be sat to true
 onMounted(() => {
@@ -30,6 +31,9 @@ onMounted(() => {
   if (token) {
     isLoggedIn.value = true;
   }
+    else{
+      isLoggedIn.value = false;
+    }
 });
 
 //Dark Mode

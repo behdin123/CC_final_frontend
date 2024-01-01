@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { 
     selectedLesson,
-} from '../../modules/lessons';
+} from '../../modules/Crud_operator/Course/lessons';
 
 // Select Lesson (ID)
 const selectLesson = (lessonId) => {

@@ -612,17 +612,16 @@ const applyDynamicWidth = (imageElement, imageRef) => {
 
   let widthPercent;
   if (aspectRatio <= 1) {
-  widthPercent =
-      minWidthPercent + (squareWidthPercent - minWidthPercent) * aspectRatio;
+    widthPercent = minWidthPercent + (squareWidthPercent - minWidthPercent) * aspectRatio;
   } else {
-    widthPercent =
-      squareWidthPercent + (maxWidthPercent - squareWidthPercent) * (aspectRatio - 1);
+    widthPercent = squareWidthPercent + (maxWidthPercent - squareWidthPercent) * (aspectRatio - 1);
   }
 
   const clampedWidthPercent = Math.max( minWidthPercent, Math.min(widthPercent, maxWidthPercent));
   imageRef.style.width = `${clampedWidthPercent}%`;
   imageWidthPercent.value = clampedWidthPercent;
 };
+
 
 const loadImageAndApplyWidth = (imageUrl, imageRef) => {
   const imageElement = new Image();
@@ -656,6 +655,7 @@ watch(selectedVideoUrl, (newVideoUrl) => {
     }
   }
 });
+
 
 // function to save and update the edits made in edit mode
 const saveSlide = async () => {

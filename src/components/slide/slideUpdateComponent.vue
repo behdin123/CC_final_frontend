@@ -37,7 +37,7 @@
 import { ref, computed, defineProps, defineEmits, onMounted } from 'vue';
 
 import { fetchSlides } from '../../modules/Crud_operator/slide/slideGetCrud';
-import { lessons } from '../../modules/lessons';
+import { lessons } from '../../modules/Crud_operator/Course/lessons';
 import { handleUpdateSlide, setUpdatedSlide } from '../../modules/Crud_operator/slide/slideUpdateCrud';
 
 const props = defineProps({

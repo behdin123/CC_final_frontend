@@ -180,7 +180,7 @@ import {
   lessons,
   selectedLesson,
   fetchLessons,
-} from '../../modules/lessons';
+} from '../../modules/Crud_operator/Course/lessons';
 
 import {
     // select Lesson popup functions & variables

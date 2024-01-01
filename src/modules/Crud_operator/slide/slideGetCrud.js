@@ -3,7 +3,7 @@ import api from '../../../api/slideApi.js';
 
 import { 
     lessons,
-  } from '../../lessons.js';
+  } from '../../Crud_operator/Course/lessons.js';
 
 /* 
 *
