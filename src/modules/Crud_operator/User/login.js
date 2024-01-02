@@ -25,7 +25,9 @@ const closePopup = () => {
 const displayError = (message) => {
   alert(message);
 };
+
 const errorMessage = ref('');
+const successMessage = ref('');
 
 
 // validates user registration form input for username, mobile, email, password, and confirmPassword
@@ -180,7 +182,7 @@ async function submitLogin() {
     }
   } 
   else {
-    errorMessage.value = validationResult; 
+    displayError(validationResult);
   }
 }
 
