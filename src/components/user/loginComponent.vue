@@ -46,7 +46,9 @@
         <form id="register-form" class="register-form" v-show="popupContent === 2" @submit.prevent="submitRegister">
 
           <h2>Sign up</h2>
-          <b>If the sig up form dosent work, and you see no messages, then one of the values is not uniqe and is already registered in the database</b>
+          <div class="register-b">
+            <b>If you cant sign up, and you see no messages, then one of the values is not uniqe and is already registered in the database</b>
+          </div>
 
           <input type="text" placeholder="Username - start with a lowercase letter" v-model="registerUsername">
           <input type="text" placeholder="Mobile" v-model="registerMobile">
@@ -219,6 +221,10 @@ let makeRouterWork = () => {
 .register-error-feedback{
   font-size: 18px;
   color: var(--error) !important;
+}
+
+.register-b{
+  margin-bottom: 10px;
 }
 
 .register-form b{
