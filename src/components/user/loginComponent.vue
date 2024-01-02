@@ -159,8 +159,7 @@ let makeRouterWork = () => {
   margin: 6% auto;
   padding: 40px;
   background-color: var(--primary-color);
-  width: 80%;
-  max-width: 500px;
+  min-width: 500px;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
 }
 

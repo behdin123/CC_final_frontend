@@ -39,6 +39,12 @@ onMounted(() => {
 //Dark Mode
 const darkMode = ref(false);
 
+const savedDarkMode = localStorage.getItem('darkMode');
+
+if (savedDarkMode !== null) {
+  darkMode.value = JSON.parse(savedDarkMode);
+}
+
 watchEffect(() => {
   localStorage.setItem('darkMode', JSON.stringify(darkMode.value));
 });
