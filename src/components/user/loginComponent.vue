@@ -53,7 +53,7 @@
           <input type="password" placeholder="Password - minimum 6 characters" v-model="registerPassword">
           <input type="password" placeholder="Confirm Password - minimum 6 characters" v-model="registerConfirmPassword">
 
-          <p v-if="errorMessage">{{ errorMessage }}</p>
+          <p class="register-error-feedback" v-if="errorMessage">{{ errorMessage }}</p>
 
           <button type="submit">Sign up</button>
 
@@ -158,6 +158,7 @@ let makeRouterWork = () => {
   padding: 40px;
   background-color: var(--primary-color);
   min-width: 500px;
+  max-width: 800px;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
 }
 
@@ -214,5 +215,9 @@ let makeRouterWork = () => {
   background-color: var(--primary-hover-color) !important;
 }
 
+.register-error-feedback{
+  font-size: 18px;
+  color: var(--error) !important;
+}
 
 </style>
