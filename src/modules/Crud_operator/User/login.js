@@ -22,13 +22,10 @@ const closePopup = () => {
   popupVisible.value = false;
 };
 
-const errorMessage = ref('');
-const successMessage = ref('');
-
 const displayError = (message) => {
   alert(message);
 };
-
+const errorMessage = ref('');
 
 
 // validates user registration form input for username, mobile, email, password, and confirmPassword
@@ -40,7 +37,7 @@ const isRegisterFormValid = (username, mobile, email, password , confirmPassword
 
    // Validate username with length and allowed characters
    if (!validator.isLength(username, { min: 3, max: 20 }) || !validator.matches(username, /^[a-zA-Z0-9_]+$/)) {
-    return 'Username must be between 3 and 20 characters and can only contain letters, numbers, and underscores';
+    return 'Username must starts with a lowercase letter, followed by lowercase letters, numbers, underscores. No Special characters as "!" "#" "@" are not allowed';
   }
 
   if (!validator.isMobilePhone(mobile)) {
@@ -106,7 +103,7 @@ async function submitRegister() {
   } 
   
   else {
-    displayError(validationResult);
+    errorMessage.value = validationResult;
   }
 }
 

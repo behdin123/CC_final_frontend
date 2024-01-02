@@ -47,14 +47,13 @@
 
           <h2>Sign up</h2>
 
-          <input type="text" placeholder="Username" v-model="registerUsername">
+          <input type="text" placeholder="Username - start with af lowercase letter" v-model="registerUsername">
           <input type="text" placeholder="Mobile" v-model="registerMobile">
-          <input type="email" placeholder="Email" v-model="registerEmail">
-          <input type="password" placeholder="Password" v-model="registerPassword">
-          <input type="password" placeholder="Confirm Password" v-model="registerConfirmPassword">
+          <input type="email" placeholder="Email - should be a real mail" v-model="registerEmail">
+          <input type="password" placeholder="Password - minimum 6 characters" v-model="registerPassword">
+          <input type="password" placeholder="Confirm Password - minimum 6 characters" v-model="registerConfirmPassword">
 
-          <div class="color message" v-if="successMessage">{{ successMessage }}</div>
-          <div class="color message" v-if="errorMessage">{{ errorMessage }}</div>
+          <p v-if="errorMessage">{{ errorMessage }}</p>
 
           <button type="submit">Sign up</button>
 
@@ -83,7 +82,6 @@ import {
   submitLogout,
   isLoggedIn,
   errorMessage,
-  successMessage,
   loginUsername,
   loginPassword,
   registerUsername,
