@@ -43,11 +43,12 @@
         </form>
 
         <!-- registration form -->
-        <form id="register-form" v-show="popupContent === 2" @submit.prevent="submitRegister">
+        <form id="register-form" class="register-form" v-show="popupContent === 2" @submit.prevent="submitRegister">
 
           <h2>Sign up</h2>
+          <b>If the sig up form dosent work, and you see no messages, then one of the values is not uniqe and is already registered in the database</b>
 
-          <input type="text" placeholder="Username - start with af lowercase letter" v-model="registerUsername">
+          <input type="text" placeholder="Username - start with a lowercase letter" v-model="registerUsername">
           <input type="text" placeholder="Mobile" v-model="registerMobile">
           <input type="email" placeholder="Email - should be a real mail" v-model="registerEmail">
           <input type="password" placeholder="Password - minimum 6 characters" v-model="registerPassword">
@@ -158,7 +159,7 @@ let makeRouterWork = () => {
   padding: 40px;
   background-color: var(--primary-color);
   min-width: 500px;
-  max-width: 800px;
+  max-width: 600px;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
 }
 
@@ -218,6 +219,11 @@ let makeRouterWork = () => {
 .register-error-feedback{
   font-size: 18px;
   color: var(--error) !important;
+}
+
+.register-form b{
+  font-size: 14px;
+  color: var(--white-black-color);
 }
 
 </style>
